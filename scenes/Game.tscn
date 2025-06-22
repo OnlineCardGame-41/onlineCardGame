@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dvoyvtf17v0ie"]
+
+[ext_resource type="Texture2D" uid="uid://c5pti0xxeqlb8" path="res://game_table.png" id="1_ibkli"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ibkli")
+centered = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+zoom = Vector2(0.5, 0.5)
