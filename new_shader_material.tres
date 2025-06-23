@@ -4,3 +4,6 @@
 
 [resource]
 shader = ExtResource("1_50bgh")
+shader_parameter/speed = 0.107
+shader_parameter/scale = 1.0
+shader_parameter/steps = 16

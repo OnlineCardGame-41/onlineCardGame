@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhaie0j4aahet"]
 
 [ext_resource type="Script" uid="uid://cmo62foi2nw1g" path="res://scenes/Multiplayer.gd" id="1_o1atq"]
-[ext_resource type="Material" uid="uid://bt4rqg6jn0r5v" path="res://new_shader_material.tres" id="2_5gu6x"]
+[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://pixelated.tres" id="2_5gu6x"]
 
 [node name="lobby" type="Node2D" node_paths=PackedStringArray("HostButton", "JoinButton", "LobbyInfo", "LobbyId_getter", "TakeCard", "PlayerList", "PlayerName_getter", "PINGME")]
 script = ExtResource("1_o1atq")

@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dkdx3c355wa27"]
+
+[ext_resource type="Shader" uid="uid://dds1pbdjm0uph" path="res://pixelated_color_picker.gdshader" id="1_abrci"]
+
+[resource]
+shader = ExtResource("1_abrci")
+shader_parameter/square_count = 259
+shader_parameter/x_offset = 0.0
+shader_parameter/color_a = Color(5.27032e-06, 0.415642, 0.208563, 1)
+shader_parameter/color_b = Color(6.01634e-07, 0.445802, 0.391152, 1)
+shader_parameter/color_c = Color(0, 0.588048, 0.513654, 1)
+shader_parameter/blend_speed = 0.02
+shader_parameter/split = 0.5
+shader_parameter/scale = 1
+shader_parameter/frequency = 3.0
+shader_parameter/amplitude = 2.5

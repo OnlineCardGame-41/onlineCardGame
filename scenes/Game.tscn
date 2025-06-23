@@ -1,13 +1,40 @@
-[gd_scene load_steps=2 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=4 format=3 uid="uid://dvoyvtf17v0ie"]
 
-[ext_resource type="Texture2D" uid="uid://c5pti0xxeqlb8" path="res://game_table.png" id="1_ibkli"]
+[ext_resource type="Texture2D" uid="uid://d4jq8cuixq17p" path="res://game_table_no_bg.png" id="2_cpr0p"]
+[ext_resource type="Material" uid="uid://dkdx3c355wa27" path="res://pixelated_color_picker.tres" id="2_qbsmt"]
+[ext_resource type="Texture2D" uid="uid://cu3t64b00depr" path="res://blue_card_prototype.png" id="3_cpr0p"]
 
 [node name="Game" type="Node2D"]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_ibkli")
-centered = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 zoom = Vector2(0.5, 0.5)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+material = ExtResource("2_qbsmt")
+offset_right = 2304.0
+offset_bottom = 1296.0
+
+[node name="GameTableNoBg" type="Sprite2D" parent="ColorRect2"]
+position = Vector2(1147.7, 630.5)
+scale = Vector2(1.11943, 1.36047)
+texture = ExtResource("2_cpr0p")
+
+[node name="BlueCardPrototype" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(178, 1068)
+scale = Vector2(5, 5)
+texture = ExtResource("3_cpr0p")
+
+[node name="BlueCardPrototype2" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(178, 593)
+scale = Vector2(5, 5)
+texture = ExtResource("3_cpr0p")
+
+[node name="BlueCardPrototype3" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(238, 178)
+rotation = 1.5708
+scale = Vector2(5, 5)
+texture = ExtResource("3_cpr0p")
