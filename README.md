@@ -1,1 +1,3 @@
-# Online Card Game
+Card game folder - godot game
+
+Signalling Server - now hosted on render

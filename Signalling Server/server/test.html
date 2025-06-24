@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+  </head>
+  <body>
+    Test
+    <button id="host">Host</button>
+    <button id="join">Join</button>
+    <input id="lobbyId" />
+    <script>
+      const MsgType = {
+        INVALID: 0,
+        CONNECTED: 1,
+        HOST: 2,
+        JOIN: 3,
+        PEER_CONNECT: 4,
+        PEER_DISCONNECT: 5,
+        OFFER: 6,
+        ANSWER: 7,
+        CANDIDATE: 8,
+        SEAL: 9,
+      }
+
+      const ws = new WebSocket('ws://localhost:8001/ws')
+      ws.addEventListener('open', () => {
+        console.log('WebSocket connection opened')
+
+        document.getElementById('host').addEventListener('click', () => {
+          console.log('Host button clicked')
+          ws.send(`${MsgType.HOST}|0`)
+        })
+
+        document.getElementById('join').addEventListener('click', () => {
+          console.log('Join button clicked')
+          const lobbyId = document.getElementById('lobbyId').value
+          ws.send(`${MsgType.JOIN}|${lobbyId}`)
+        })
+
+        ws.addEventListener('message', (event) => {
+          const data = event.data
+          console.log('Received message:', data)
+
+          const [msgType, ...rest] = data.split('|')
+          const type = parseInt(msgType, 10)
+
+          switch (type) {
+            case MsgType.CONNECTED:
+              console.log('Connected to server')
+              break
+            case MsgType.HOST:
+              console.log('Host message received:', rest)
+              break
+            case MsgType.JOIN:
+              console.log('Join message received:', rest)
+              break
+            case MsgType.PEER_CONNECT:
+              console.log('Peer connect message received:', rest)
+              break
+            case MsgType.PEER_DISCONNECT:
+              console.log('Peer disconnect message received:', rest)
+              break
+            case MsgType.OFFER:
+              console.log('Offer message received:', rest)
+              break
+            case MsgType.ANSWER:
+              console.log('Answer message received:', rest)
+              break
+            case MsgType.CANDIDATE:
+              console.log('Candidate message received:', rest)
+              break
+            case MsgType.SEAL:
+              console.log('Seal message received:', rest)
+              break
+            default:
+              console.error('Unknown message type:', type)
+          }
+        })
+      })
+    </script>
+  </body>
+</html>
