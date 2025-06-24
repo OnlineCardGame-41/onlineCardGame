@@ -13,7 +13,7 @@ extends Node2D
 var client: SignalWsClient
 
 @onready var rtc_mesh := WebRTCMultiplayerPeer.new()
-var ice_servers := [{ "urls": "stun:stun.l.google.com:19302" },
+var ice_servers := [{ "urls": "stun:stun.l.google.com:19302" }, #Stun and Turn server adresses and credentials
  {"urls": "stun:stun1.l.google.com:3478"},
  {
 		"urls": "relay1.expressturn.com:3480",
@@ -52,6 +52,7 @@ func _process(_delta):
 	if client != null:
 		client.poll()
 
+#buttons
 func _on_host_button_pressed() -> void:
 	is_host = true
 	LobbyInfo.text = "Hosting..."
@@ -68,6 +69,21 @@ func _on_join_button_pressed() -> void:
 	rtc_mesh.create_client(id)
 	multiplayer.multiplayer_peer = rtc_mesh
 
+func _on_take_card_pressed() -> void:
+	if(!is_host):
+		TakeCard.text = "Only host can start a game"
+		return
+	rpc("game_start")
+	game_start()
+
+func _on_ping_pressed() -> void:
+	rpc("test_ping")
+
+#after connection to server
+func _on_we_joined():
+	HostButton.disabled = false
+	JoinButton.disabled = false
+	LobbyInfo.text = "Connected to server"
 
 func _on_lobby_hosted(pid: int, lobby_id: int) -> void:
 	print(pid)
@@ -75,12 +91,6 @@ func _on_lobby_hosted(pid: int, lobby_id: int) -> void:
 	LobbyId_getter.text = str(lobby_id)
 	_add_self_to_list()
 	TakeCard.disabled = false
-	
-func _on_we_joined():
-	HostButton.disabled = false
-	JoinButton.disabled = false
-	LobbyInfo.text = "Connected to server"
-	
 
 func _on_lobby_sealed(sealed_lobby_id: int):
 	LobbyInfo.text += " (sealed)"
@@ -119,7 +129,6 @@ func _spawn_pc(pid: int, polite: bool) -> WebRTCPeerConnection:
 		pc.create_offer()
 	return pc
 
-
 func _on_offer_received(from_pid: int, sdp: String) -> void:
 	var pc = _spawn_pc(from_pid, true)
 	if pc == null:
@@ -153,12 +162,6 @@ func _on_network_peer_connected(id:int) -> void:
 	if name == "": name = "Guest"
 	rpc_id(id, "_rpc_add_player", name)
 
-@rpc("any_peer")
-func _rpc_add_player(name:String) -> void:
-	if PlayerList.find_item(name) == -1:
-		PlayerList.add_item(name)
-
-
 func _add_self_to_list() -> void:
 	var name = PlayerName_getter.text.strip_edges()
 	if name == "": 
@@ -166,7 +169,6 @@ func _add_self_to_list() -> void:
 	if !_player_list_has(name):
 		PlayerList.add_item(name)
 
-		
 func _player_list_has(name: String) -> bool:
 	for i in PlayerList.item_count:
 		if PlayerList.get_item_text(i) == name:
@@ -179,16 +181,17 @@ func _on_peer_connected(pid: int):
 		_spawn_pc(pid, false)
 	else:
 		# Клиент просто ждёт offer от хоста
-		print("Connected to peer %d, waiting for offer" % pid)
-	
+		print("Connected to peer %d, waiting for offer" % pid)	
+
 @rpc("any_peer")
 func test_ping():
 	print("smth")
 
-
-func _on_ping_pressed() -> void:
-	rpc("test_ping")
-
-
-func _on_take_card_pressed() -> void:
+@rpc("any_peer")
+func game_start():
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
+
+@rpc("any_peer")
+func _rpc_add_player(name:String) -> void:
+	if PlayerList.find_item(name) == -1:
+		PlayerList.add_item(name)
