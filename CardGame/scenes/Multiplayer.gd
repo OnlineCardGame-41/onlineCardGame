@@ -56,7 +56,7 @@ func _process(_delta):
 func _on_host_button_pressed() -> void:
 	is_host = true
 	LobbyInfo.text = "Hosting..."
-	client.host_lobby()
+	client.host_lobby(PlayerName_getter.text)
 	rtc_mesh.create_server()
 	multiplayer.multiplayer_peer = rtc_mesh 
 	
@@ -64,7 +64,7 @@ func _on_join_button_pressed() -> void:
 	is_host = false
 	var id = int(LobbyId_getter.text)
 	print("Joining...", id)
-	client.join_lobby(id)
+	client.join_lobby(id, PlayerName_getter.text)
 	
 	rtc_mesh.create_client(id)
 	multiplayer.multiplayer_peer = rtc_mesh
@@ -160,7 +160,7 @@ func _on_candidate_received(from_pid: int, mid: String, idx: int, sdp: String) -
 func _on_network_peer_connected(id:int) -> void:
 	var name = PlayerName_getter.text.strip_edges()
 	if name == "": name = "Guest"
-	rpc_id(id, "_rpc_add_player", name)
+	rpc("_rpc_add_player", name)
 
 func _add_self_to_list() -> void:
 	var name = PlayerName_getter.text.strip_edges()

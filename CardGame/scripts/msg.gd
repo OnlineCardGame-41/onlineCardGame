@@ -13,7 +13,9 @@ enum Type {
 	OFFER,
 	ANSWER,
 	CANDIDATE,
-	SEAL
+	SEAL,
+	LOBBIES,
+	UPDATENAME
 }
 
 

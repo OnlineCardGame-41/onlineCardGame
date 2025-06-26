@@ -29,14 +29,19 @@ func connect_to_server(server_url: String) -> void:
 	peer.ws.connect_to_url(server_url)
 	peer.lobby_id = 0
 
-func host_lobby():
+func host_lobby(name: String):
+	update_name(name)
 	if peer == null or not peer.is_open():
 		print("Error: Not connected to server.")
 		return
 	
 	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.HOST))
 
-func join_lobby(lobby_id: int):
+func update_name(name: String):
+	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.UPDATENAME, name))
+
+func join_lobby(lobby_id: int, name: String):
+	update_name(name)
 	if peer == null or not peer.is_open():
 		print("Error: Not connected to server.")
 		return
