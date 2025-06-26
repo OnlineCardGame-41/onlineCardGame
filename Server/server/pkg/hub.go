@@ -158,6 +158,13 @@ func (hub *Hub) Run() {
 				// пересылаем, указав для получателя ЛОКАЛЬНЫЙ ID отправителя
 				sourceLocal := lobby.LocalId(source_peer)
 				targetPeer.send <- msg(int(sourceLocal), peer_msg.msg.msgType, peer_msg.msg.data)
+			case LOBBIES:
+				for _, lobby := range hub.lobbies {
+				    source_peer.send <- msg(int(lobby.id), LOBBIES, []byte(lobby.members[1].name));
+				}
+			case UPDATENAME:
+				source_peer.UpdateName(string(peer_msg.msg.data))
+
 			}
 		}
 	}
