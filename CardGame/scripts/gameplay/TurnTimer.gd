@@ -4,6 +4,7 @@ var current_pid := 0
 func _ready() -> void:
 	autostart = false
 	one_shot  = true
+	wait_time = 30.0
 	connect("timeout", Callable(self, "_on_timeout"))
 
 func _on_timeout() -> void:
