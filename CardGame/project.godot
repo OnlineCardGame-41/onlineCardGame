@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="CardGame"
-run/main_scene="uid://bhaie0j4aahet"
+run/main_scene="uid://b758wfkg6h3ht"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
