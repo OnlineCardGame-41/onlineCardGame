@@ -9,6 +9,8 @@ extends Node2D
 @export var PlayerList : ItemList
 @export var PlayerName_getter : LineEdit
 @export var PINGME: Button
+@export var Game: Node2D
+
 
 var client: SignalWsClient
 
@@ -19,7 +21,8 @@ var ice_servers := [{ "urls": "stun:stun.l.google.com:19302" }, #Stun and Turn s
 		"urls": "relay1.expressturn.com:3480",
 		"username": "000000002065841620",
 		"credential": "xPemnFVrdPUHMn7nliW+mHLxxt8="
- }]
+ }
+]
 
 var peers = {}
 
@@ -54,14 +57,12 @@ func _process(_delta):
 
 #buttons
 func _on_host_button_pressed() -> void:
-	is_host = true
 	LobbyInfo.text = "Hosting..."
 	client.host_lobby(PlayerName_getter.text)
 	rtc_mesh.create_server()
 	multiplayer.multiplayer_peer = rtc_mesh 
 	
 func _on_join_button_pressed() -> void:
-	is_host = false
 	var id = int(LobbyId_getter.text)
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
@@ -70,11 +71,10 @@ func _on_join_button_pressed() -> void:
 	multiplayer.multiplayer_peer = rtc_mesh
 
 func _on_take_card_pressed() -> void:
-	if(!is_host):
-		TakeCard.text = "Only host can start a game"
-		return
+	if not is_multiplayer_authority():
+		return  
 	rpc("game_start")
-	game_start()
+
 
 func _on_ping_pressed() -> void:
 	rpc("test_ping")
@@ -176,7 +176,7 @@ func _player_list_has(name: String) -> bool:
 	return false
 	
 func _on_peer_connected(pid: int):
-	if is_host:
+	if is_multiplayer_authority():
 		# Мы хост — создаём соединение и сразу offer
 		_spawn_pc(pid, false)
 	else:
@@ -187,9 +187,10 @@ func _on_peer_connected(pid: int):
 func test_ping():
 	print("smth")
 
-@rpc("any_peer")
+@rpc("authority", "call_local")
 func game_start():
-	get_tree().change_scene_to_file("res://scenes/Game.tscn")
+	self.visible = false
+	Game.visible = true
 
 @rpc("any_peer")
 func _rpc_add_player(name:String) -> void:

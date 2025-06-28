@@ -1,13 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=4 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Texture2D" uid="uid://c5pti0xxeqlb8" path="res://game_table.png" id="1_ibkli"]
+[ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
+[ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.454581, 0.554701)
 texture = ExtResource("1_ibkli")
 centered = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
-zoom = Vector2(0.5, 0.5)
+
+[node name="Match" type="Node" parent="."]
+script = ExtResource("2_qbsmt")
+
+[node name="TurnTimer" type="Timer" parent="Match"]
+script = ExtResource("3_cpr0p")
