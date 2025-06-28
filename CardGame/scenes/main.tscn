@@ -1,102 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://b758wfkg6h3ht"]
 
-[ext_resource type="Script" uid="uid://cmo62foi2nw1g" path="res://scenes/Multiplayer.gd" id="1_bo1nx"]
-[ext_resource type="Material" uid="uid://bt4rqg6jn0r5v" path="res://new_shader_material.tres" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://bhaie0j4aahet" path="res://scenes/lobby.tscn" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://dvoyvtf17v0ie" path="res://scenes/Game.tscn" id="2_sugp2"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("HostButton", "JoinButton", "LobbyInfo", "LobbyId_getter", "TakeCard", "PlayerList", "PlayerName_getter", "PINGME")]
-script = ExtResource("1_bo1nx")
-HostButton = NodePath("HostButton")
-JoinButton = NodePath("JoinButton")
-LobbyInfo = NodePath("LobbyInfo")
-LobbyId_getter = NodePath("LobbyId_getter")
-TakeCard = NodePath("TakeCard")
-PlayerList = NodePath("PlayerList")
-PlayerName_getter = NodePath("PlayerName_getter")
-PINGME = NodePath("PING")
+[node name="Main" type="Node2D"]
 
-[node name="ColorRect" type="ColorRect" parent="."]
-material = ExtResource("2_0wfyh")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="lobby" parent="." node_paths=PackedStringArray("Game") instance=ExtResource("1_0wfyh")]
+position = Vector2(2, 2)
+Game = NodePath("../Game")
 
-[node name="JoinButton" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 52.0
-offset_right = 629.0
-offset_bottom = 89.0
-text = "Join"
-metadata/_edit_use_anchors_ = true
-
-[node name="HostButton" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 102.0
-offset_right = 630.0
-offset_bottom = 139.0
-text = "Host"
-metadata/_edit_use_anchors_ = true
-
-[node name="LobbyInfo" type="Label" parent="."]
-offset_left = 4.0
-offset_top = 2.0
-offset_right = 451.0
-offset_bottom = 218.0
-metadata/_edit_use_anchors_ = true
-
-[node name="LobbyId_getter" type="LineEdit" parent="."]
-offset_left = 639.0
-offset_top = 56.0
-offset_right = 1091.0
-offset_bottom = 87.0
-metadata/_edit_use_anchors_ = true
-
-[node name="EnterLobbyId" type="Label" parent="."]
-offset_left = 639.0
-offset_top = 23.0
-offset_right = 757.0
-offset_bottom = 46.0
-text = "Enter Lobby ID:"
-metadata/_edit_use_anchors_ = true
-
-[node name="PlayerList" type="ItemList" parent="."]
-offset_left = 558.0
-offset_top = 150.0
-offset_right = 1093.0
-offset_bottom = 613.0
-metadata/_edit_use_anchors_ = true
-
-[node name="TakeCard" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 617.0
-offset_right = 1094.0
-offset_bottom = 646.0
-
-[node name="PlayerName_label" type="Label" parent="."]
-offset_left = 94.0
-offset_top = 33.0
-offset_right = 191.0
-offset_bottom = 82.0
-text = "Enter Name:
-"
-
-[node name="PlayerName_getter" type="LineEdit" parent="."]
-offset_left = 96.0
-offset_top = 55.0
-offset_right = 548.0
-offset_bottom = 86.0
-metadata/_edit_use_anchors_ = true
-
-[node name="PING" type="Button" parent="."]
-offset_left = 128.0
-offset_top = 255.0
-offset_right = 289.0
-offset_bottom = 414.0
-text = "ПИНГ"
-
-[connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="PING" to="." method="_on_ping_pressed"]
+[node name="Game" parent="." instance=ExtResource("2_sugp2")]
+visible = false
+position = Vector2(2, 1)
