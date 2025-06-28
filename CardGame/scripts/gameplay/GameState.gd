@@ -1,4 +1,5 @@
 extends Node
+
 signal turn_started(pid:int, time_left:float)
 signal card_drawn(pid:int, card:int)     # CardDeck.Color
 signal card_played(pid:int, card:int)
