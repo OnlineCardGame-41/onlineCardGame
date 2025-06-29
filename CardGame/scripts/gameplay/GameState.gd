@@ -25,7 +25,7 @@ func start_match(pids:PackedInt32Array):
 		hands[pid]  = []
 		boards[pid] = []
 		if multiplayer.is_server():
-			for i in range(4):
+			for i in range(5):
 				_server_draw(pid)          
 	print(hands, multiplayer.get_unique_id())
 	
@@ -66,16 +66,25 @@ func request_play(card_idx:int, to_board:bool) -> void:
 		_server_card_played(pid, c)
 	else:
 		_resolve_board(pid)
+		
 	_check_victory(pid)
 	_begin_turn.rpc((active_idx + 1) % players.size())
-
+	
+@rpc("any_peer")
+func finish():
+	var pid = multiplayer.get_remote_sender_id()
+	if pid != players[active_idx]:
+		return
+	_begin_turn.rpc((active_idx + 1) % players.size())
+	
+	
 @rpc("any_peer", "call_local")
 func _resolve_board(pid:int) -> void:
 	var seq = boards[pid]
 	boards[pid] = []
 	_server_board_cleared(pid, seq)
 	
-	if seq.size() > 3:               # заглушка «> 3 карт»
+	if seq.size() >= 3:               
 		_discard_one(pid)
 		_others_draw(pid)
 
@@ -104,10 +113,10 @@ func _server_card_played(pid:int, card:int) -> void:
 func _client_card_played(pid:int, card:int) -> void:
 	if not boards.has(pid):
 		boards[pid] = []
-	boards[pid].append(card)
 	
 	var idx = hands[pid].find(card)
 	if idx != -1:
+		boards[pid].append(card)
 		hands[pid].remove_at(idx)
 
 	emit_signal("card_played", pid, card)

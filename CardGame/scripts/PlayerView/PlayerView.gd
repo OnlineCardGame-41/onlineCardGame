@@ -54,6 +54,8 @@ func _refresh_board():
 			" ".join(seq.map(func(c): return LABEL.get(c)))
 		]
 		Board.add_item(text)
+
+	
 	
 func _on_board_cleared(clr_pid:int, _seq:Array) -> void:
 	_refresh_board()
@@ -66,3 +68,7 @@ func _on_hand_click(idx: int) -> void:
 
 func _on_clear_button_pressed() -> void:
 	_gs.request_play.rpc(-1, false)
+
+
+func _on_finish_button_pressed() -> void:
+	_gs.finish()
