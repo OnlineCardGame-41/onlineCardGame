@@ -12,7 +12,7 @@ const LABEL := {
 	CardDeck.CardColor.BLUE:   "Синяя",
 }
 
-func card_label(c:CardDeck) -> String:   return LABEL[c]
+func card_label(c: CardDeck.CardColor) -> String:   return LABEL[c]
 
 
 func _ready() -> void:
@@ -38,11 +38,11 @@ func _connect_signals() -> void:
 	_gs.card_played.connect(_on_card_played)
 	_gs.board_cleared.connect(_on_board_cleared)
 
-func _on_card_drawn(draw_pid:int, color:CardDeck) -> void:
+func _on_card_drawn(draw_pid:int, color:CardDeck.CardColor) -> void:
 	if draw_pid != pid: return
 	Hand.add_item(card_label(color))
 
-func _on_card_played(play_pid:int, color:CardDeck) -> void:
+func _on_card_played(play_pid:int, color:CardDeck.CardColor) -> void:
 	if play_pid != pid: return
 	
 	for i in Hand.item_count:

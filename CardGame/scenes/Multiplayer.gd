@@ -1,6 +1,7 @@
 extends Node2D
 
-@export var websocket_url = "wss://godot-golang-webrtc-signal.onrender.com/ws"
+#@export var websocket_url = "wss://godot-golang-webrtc-signal.onrender.com/ws"
+@export var websocket_url = "wss://onlinecardgame.onrender.com/ws"
 @export var HostButton : Button
 @export var JoinButton : Button
 @export var JoinMode: Button
