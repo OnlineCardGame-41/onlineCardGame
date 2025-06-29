@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml
 name: CI
 
 on:
@@ -10,71 +11,86 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GODOT_VERSION: "4.4.stable"
+      # используем существующий стабильный тег Godot
+      GODOT_VERSION: "4.4.1-stable"
 
     steps:
-      # ---------------------------------------------------------------------
-      # Checkout repository
-      # ---------------------------------------------------------------------
-      - uses: actions/checkout@v4
+    # ---------------------------------------------------------------------
+    # Checkout repository
+    # ---------------------------------------------------------------------
+    - uses: actions/checkout@v4
 
-      # ---------------------------------------------------------------------
-      # Go tool‑chain & cache
-      # ---------------------------------------------------------------------
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
+    # ---------------------------------------------------------------------
+    # Go tool‑chain & cache
+    # ---------------------------------------------------------------------
+    - uses: actions/setup-go@v5
+      with:
+        go-version: "1.22"
 
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/Server/server/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('Server/server/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
 
-      - name: go vet ./...
-        working-directory: Server/server
-        run: go vet ./...
+    - name: go vet
+      working-directory: Server/server
+      run: go vet ./...
 
-      - name: Run Go tests (unit + integration)
-        working-directory: Server/server
-        run: |
-          go test ./... -coverprofile=coverage.out -v
+    - name: Run Go tests (unit + integration)
+      working-directory: Server/server
+      run: |
+        go test ./... -coverprofile=coverage.out -v
 
-      - name: Upload Go coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: go-coverage
-          path: Server/server/coverage.out
+    - uses: actions/upload-artifact@v4
+      with:
+        name: go-coverage
+        path: Server/server/coverage.out
 
-      # ---------------------------------------------------------------------
-      # Godot headless + GDScript tooling
-      # ---------------------------------------------------------------------
-      - name: Set up Godot (headless)
-        uses: lihop/setup-godot@v2
-        with:
-          version: ${{ env.GODOT_VERSION }}
-          alias: godot
+    # ---------------------------------------------------------------------
+    # Godot headless + GDScript tooling
+    # ---------------------------------------------------------------------
+    - name: Set up Godot (headless)
+      uses: lihop/setup-godot@v2
+      with:
+        version: ${{ env.GODOT_VERSION }}
+        alias: godot
 
-      - name: Install gdtoolkit (gdlint / gdformat)
-        run: pip install gdtoolkit
+    # ---------------------------------------------------------------------
+    # Python environment & gdtoolkit
+    # ---------------------------------------------------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Lint GDScript
-        working-directory: CardGame
-        run: gdlint -e .
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-      - name: Run GUT tests
-        working-directory: CardGame
-        run: |
-          godot -q --headless \
-            -s addons/gut/gut_cmdln.gd \
-            -gdir=res://tests \
-            -gexit \
-            -gjunit_xml_file=res://tests/report.xml
+    - name: Install gdtoolkit (gdlint / gdformat)
+      run: pip install --upgrade gdtoolkit
 
-      - name: Upload GUT JUnit report
-        uses: actions/upload-artifact@v4
-        with:
-          name: gut-report
-          path: CardGame/tests/report.xml
+    - name: Lint GDScript
+      working-directory: CardGame
+      run: gdlint -e .
+
+    - name: Run GUT tests
+      working-directory: CardGame
+      run: |
+        godot -q --headless \
+          -s addons/gut/gut_cmdln.gd \
+          -gdir=res://tests \
+          -gexit \
+          -gjunit_xml_file=res://tests/report.xml
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: gut-report
+        path: CardGame/tests/report.xml
