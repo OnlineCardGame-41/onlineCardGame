@@ -79,7 +79,7 @@ jobs:
 
     - name: Lint GDScript
       working-directory: CardGame
-      run: gdlint -e .
+      run: gdlint .
 
     - name: Run GUT tests
       working-directory: CardGame
