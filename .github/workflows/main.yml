@@ -151,9 +151,10 @@ jobs:
       - name: Download Android build template
         working-directory: CardGame
         run: |
-          mkdir -p android
           wget https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
-          unzip -o Godot_v4.4.1-stable_export_templates.tpz -d android
+          mkdir -p android/build
+          unzip -o Godot_v4.4.1-stable_export_templates.tpz android_source.zip
+          unzip -o android_source.zip -d android/build
 
       # ────────────────────────────────────────────────────────────────
       # Build Android export (debug apk, без keystore)
