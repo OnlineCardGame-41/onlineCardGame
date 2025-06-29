@@ -14,7 +14,7 @@ extends Node2D
 @export var PlayerName_getter : LineEdit
 @export var PINGME: Button
 @export var Game: Node2D
-
+@export var game_scene : PackedScene = preload("res://scenes/Game.tscn")
 
 var client: SignalWsClient
 
@@ -51,6 +51,7 @@ func to_join_mode():
 	TakeCard.visible = false
 	PlayerList.visible = false
 	client.get_lobbies()
+	
 func to_startScreen_mode():
 	var current_mode = 0
 	HostButton.visible = true
@@ -64,6 +65,7 @@ func to_startScreen_mode():
 	EnterLobbyId.visible = false
 	TakeCard.visible = false
 	PlayerList.visible = false
+	
 func to_lobbyScreen_mode():
 	var current_mode = 2
 	HostButton.visible = false
@@ -77,19 +79,16 @@ func to_lobbyScreen_mode():
 	EnterLobbyId.visible = false
 	TakeCard.visible = true
 	PlayerList.visible = true
+	
 func _ready() -> void:
-	
-	
 	LobbyInfo.text = "Connecting..."
 	to_startScreen_mode()
 	HostButton.disabled = true
 	JoinMode.disabled = true
 	
-	
 	client = SignalWsClient.new()
 	
 	rtc_mesh = WebRTCMultiplayerPeer.new()
-
 	
 	client.lobby_hosted.connect(_on_lobby_hosted)
 	client.lobby_joined.connect(_on_lobby_joined)
@@ -242,8 +241,15 @@ func test_ping():
 
 @rpc("authority", "call_local")
 func game_start():
+	var gm = game_scene.instantiate()
+	get_parent().add_child(gm)
 	self.visible = false
-	Game.visible = true
+	var gs : Node = gm.get_node("GameState")
+	var peer_ids : PackedInt32Array = multiplayer.get_peers()
+	peer_ids.push_back(multiplayer.get_unique_id())   
+	peer_ids.sort()
+	if multiplayer.is_server():
+		gs.start_match.rpc(peer_ids)
 
 @rpc("any_peer")
 func _rpc_add_player(name:String) -> void:
