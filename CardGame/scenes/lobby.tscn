@@ -3,14 +3,18 @@
 [ext_resource type="Script" uid="uid://cmo62foi2nw1g" path="res://scenes/Multiplayer.gd" id="1_o1atq"]
 [ext_resource type="Material" uid="uid://bt4rqg6jn0r5v" path="res://new_shader_material.tres" id="2_5gu6x"]
 
-[node name="lobby" type="Node2D" node_paths=PackedStringArray("HostButton", "JoinButton", "LobbyInfo", "LobbyId_getter", "TakeCard", "PlayerList", "PlayerName_getter", "PINGME")]
+[node name="lobby" type="Node2D" node_paths=PackedStringArray("HostButton", "JoinButton", "JoinMode", "JoinList", "TakeCard", "LobbyInfo", "EnterLobbyId", "LobbyId_getter", "PlayerList", "LobbiesList", "PlayerName_getter", "PINGME")]
 script = ExtResource("1_o1atq")
 HostButton = NodePath("HostButton")
-JoinButton = NodePath("JoinButton")
-LobbyInfo = NodePath("LobbyInfo")
-LobbyId_getter = NodePath("LobbyId_getter")
+JoinButton = NodePath("direct connect")
+JoinMode = NodePath("JoinMode")
+JoinList = NodePath("JoinList")
 TakeCard = NodePath("TakeCard")
-PlayerList = NodePath("PlayerList")
+LobbyInfo = NodePath("LobbyInfo")
+EnterLobbyId = NodePath("EnterLobbyId")
+LobbyId_getter = NodePath("LobbyId_getter")
+PlayerList = NodePath("Control/PlayerList")
+LobbiesList = NodePath("Control/LobbiesList")
 PlayerName_getter = NodePath("PlayerName_getter")
 PINGME = NodePath("PING")
 
@@ -24,19 +28,19 @@ offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="JoinButton" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 52.0
-offset_right = 629.0
-offset_bottom = 89.0
-text = "Join"
+[node name="direct connect" type="Button" parent="."]
+offset_left = 606.0
+offset_top = 129.0
+offset_right = 727.0
+offset_bottom = 166.0
+text = "Direct connect"
 metadata/_edit_use_anchors_ = true
 
 [node name="HostButton" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 102.0
-offset_right = 630.0
-offset_bottom = 139.0
+offset_left = 537.0
+offset_top = 123.0
+offset_right = 611.0
+offset_bottom = 160.0
 text = "Host"
 metadata/_edit_use_anchors_ = true
 
@@ -48,58 +52,102 @@ offset_bottom = 218.0
 metadata/_edit_use_anchors_ = true
 
 [node name="LobbyId_getter" type="LineEdit" parent="."]
-offset_left = 639.0
-offset_top = 56.0
-offset_right = 1091.0
-offset_bottom = 87.0
+offset_left = 138.0
+offset_top = 135.0
+offset_right = 590.0
+offset_bottom = 166.0
 metadata/_edit_use_anchors_ = true
 
 [node name="EnterLobbyId" type="Label" parent="."]
-offset_left = 639.0
-offset_top = 23.0
-offset_right = 757.0
-offset_bottom = 46.0
+offset_left = 14.0
+offset_top = 142.0
+offset_right = 132.0
+offset_bottom = 165.0
 text = "Enter Lobby ID:"
 metadata/_edit_use_anchors_ = true
 
-[node name="PlayerList" type="ItemList" parent="."]
-offset_left = 558.0
-offset_top = 150.0
-offset_right = 1093.0
-offset_bottom = 613.0
-metadata/_edit_use_anchors_ = true
-
 [node name="TakeCard" type="Button" parent="."]
-offset_left = 556.0
-offset_top = 617.0
-offset_right = 1094.0
-offset_bottom = 646.0
+offset_left = 469.0
+offset_top = 606.0
+offset_right = 793.0
+offset_bottom = 637.0
 text = "Take Card!"
 
 [node name="PlayerName_label" type="Label" parent="."]
-offset_left = 94.0
-offset_top = 33.0
-offset_right = 191.0
-offset_bottom = 82.0
+offset_left = 526.0
+offset_top = 51.0
+offset_right = 623.0
+offset_bottom = 100.0
 text = "Enter Name:
 "
 
 [node name="PlayerName_getter" type="LineEdit" parent="."]
-offset_left = 96.0
-offset_top = 55.0
-offset_right = 548.0
-offset_bottom = 86.0
+offset_left = 349.0
+offset_top = 77.0
+offset_right = 801.0
+offset_bottom = 108.0
 metadata/_edit_use_anchors_ = true
 
 [node name="PING" type="Button" parent="."]
-offset_left = 128.0
-offset_top = 255.0
-offset_right = 289.0
-offset_bottom = 414.0
+offset_left = 1048.0
+offset_top = 6.0
+offset_right = 1147.0
+offset_bottom = 91.0
 text = "Ping Button
 "
 
-[connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerList" type="ItemList" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -7.65
+anchor_top = -0.65
+anchor_right = -7.65
+anchor_bottom = -0.65
+offset_left = 588.0
+offset_top = 165.0
+offset_right = 1123.0
+offset_bottom = 628.0
+metadata/_edit_use_anchors_ = true
+
+[node name="LobbiesList" type="ItemList" parent="Control"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 171.0
+offset_right = 848.0
+offset_bottom = 630.0
+
+[node name="JoinMode" type="Button" parent="."]
+offset_left = 538.0
+offset_top = 164.0
+offset_right = 611.0
+offset_bottom = 201.0
+text = "Join
+"
+
+[node name="JoinList" type="Button" parent="."]
+offset_left = 871.0
+offset_top = 577.0
+offset_right = 1039.0
+offset_bottom = 617.0
+text = "Connect"
+
+[node name="X" type="Button" parent="."]
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 56.0
+offset_bottom = 51.0
+text = "X"
+
+[connection signal="pressed" from="direct connect" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="TakeCard" to="." method="_on_take_card_pressed"]
 [connection signal="pressed" from="PING" to="." method="_on_ping_pressed"]
+[connection signal="pressed" from="JoinMode" to="." method="_on_joinMode_pressed"]
+[connection signal="pressed" from="JoinList" to="." method="_on_join_list_pressed"]
+[connection signal="pressed" from="X" to="." method="_on_X_pressed"]

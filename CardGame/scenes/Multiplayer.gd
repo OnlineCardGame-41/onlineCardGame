@@ -3,10 +3,14 @@ extends Node2D
 @export var websocket_url = "wss://godot-golang-webrtc-signal.onrender.com/ws"
 @export var HostButton : Button
 @export var JoinButton : Button
-@export var LobbyInfo : Label
-@export var LobbyId_getter : LineEdit
+@export var JoinMode: Button
+@export var JoinList: Button
 @export var TakeCard : Button
+@export var LobbyInfo : Label
+@export var EnterLobbyId : Label
+@export var LobbyId_getter : LineEdit
 @export var PlayerList : ItemList
+@export var LobbiesList: ItemList
 @export var PlayerName_getter : LineEdit
 @export var PINGME: Button
 @export var Game: Node2D
@@ -28,12 +32,59 @@ var peers = {}
 
 var is_host = false
 
+var current_mode = 0
+#0 = basic screen
+#1 = lobbies list
+#2 = in lobby
+
+func to_join_mode():
+	var current_mode = 1
+	HostButton.visible = false
+	JoinMode.visible = false
+	JoinButton.visible = true
+	LobbyId_getter.visible = true
+	TakeCard.visible = true
+	PlayerList.visible = true
+	JoinList.visible = true
+	LobbiesList.visible = true
+	EnterLobbyId.visible = true
+	TakeCard.visible = false
+	PlayerList.visible = false
+	client.get_lobbies()
+func to_startScreen_mode():
+	var current_mode = 0
+	HostButton.visible = true
+	JoinMode.visible = true
+	JoinButton.visible = false
+	LobbyId_getter.visible = false
+	TakeCard.visible = false
+	PlayerList.visible = false
+	JoinList.visible = false
+	LobbiesList.visible = false
+	EnterLobbyId.visible = false
+	TakeCard.visible = false
+	PlayerList.visible = false
+func to_lobbyScreen_mode():
+	var current_mode = 2
+	HostButton.visible = false
+	JoinMode.visible = false
+	JoinButton.visible = false
+	LobbyId_getter.visible = false
+	TakeCard.visible = false
+	PlayerList.visible = false
+	JoinList.visible = false
+	LobbiesList.visible = false
+	EnterLobbyId.visible = false
+	TakeCard.visible = true
+	PlayerList.visible = true
 func _ready() -> void:
 	
 	
 	LobbyInfo.text = "Connecting..."
+	to_startScreen_mode()
 	HostButton.disabled = true
-	JoinButton.disabled = true
+	JoinMode.disabled = true
+	
 	
 	client = SignalWsClient.new()
 	
@@ -48,6 +99,7 @@ func _ready() -> void:
 	client.candidate_received.connect(_on_candidate_received)
 	client.we_joined.connect(_on_we_joined)
 	client.peer_connected.connect(_on_peer_connected)
+	client.new_lobby_received.connect(_on_new_lobby_received)
 	
 	client.connect_to_server(websocket_url)
 
@@ -60,7 +112,8 @@ func _on_host_button_pressed() -> void:
 	LobbyInfo.text = "Hosting..."
 	client.host_lobby(PlayerName_getter.text)
 	rtc_mesh.create_server()
-	multiplayer.multiplayer_peer = rtc_mesh 
+	multiplayer.multiplayer_peer = rtc_mesh
+	to_lobbyScreen_mode()
 	
 func _on_join_button_pressed() -> void:
 	var id = int(LobbyId_getter.text)
@@ -82,22 +135,22 @@ func _on_ping_pressed() -> void:
 #after connection to server
 func _on_we_joined():
 	HostButton.disabled = false
-	JoinButton.disabled = false
+	JoinMode.disabled = false
 	LobbyInfo.text = "Connected to server"
 
 func _on_lobby_hosted(pid: int, lobby_id: int) -> void:
 	print(pid)
 	LobbyInfo.text = "Lobby ID: %d" % lobby_id
-	LobbyId_getter.text = str(lobby_id)
 	_add_self_to_list()
 	TakeCard.disabled = false
+	var name = PlayerName_getter.text.strip_edges()
 
 func _on_lobby_sealed(sealed_lobby_id: int):
 	LobbyInfo.text += " (sealed)"
 
 func _on_lobby_joined(pid: int, lobby_id: int, sealed: bool) -> void:
+	to_lobbyScreen_mode()
 	LobbyInfo.text = "Joined Lobby %d (sealed=%s)" % [lobby_id, str(sealed)]
-	LobbyId_getter.text = str(lobby_id) 
 	_add_self_to_list()
 	TakeCard.disabled = false
 	
@@ -196,3 +249,30 @@ func game_start():
 func _rpc_add_player(name:String) -> void:
 	if PlayerList.find_item(name) == -1:
 		PlayerList.add_item(name)
+
+
+func _on_joinMode_pressed() -> void:
+	to_join_mode()
+
+
+func _on_X_pressed() -> void:
+	get_tree().reload_current_scene()
+	
+func _on_new_lobby_received(lobby_id: int, host_name: String):
+	var entry = "%s (ID: %d)" % [host_name, lobby_id]
+	var index = LobbiesList.add_item(entry)
+	LobbiesList.set_item_metadata(index, lobby_id)
+
+
+func _on_join_list_pressed() -> void:
+	var selected_index = LobbiesList.get_selected_items()
+	if selected_index.is_empty():
+		LobbyInfo.text = "Выберите лобби в списке"
+		return
+	var index = selected_index[0]
+	var id = LobbiesList.get_item_metadata(index)
+	print("Joining...", id)
+	client.join_lobby(id, PlayerName_getter.text)
+	
+	rtc_mesh.create_client(id)
+	multiplayer.multiplayer_peer = rtc_mesh
