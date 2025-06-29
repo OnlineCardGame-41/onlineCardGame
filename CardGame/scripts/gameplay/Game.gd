@@ -16,6 +16,6 @@ func _spawn_player_view(pid:int) -> void:
 	var pv  = player_view_scene.instantiate()
 	pv.pid = pid
 	_players_ui.add_child(pv)
+	pv.init(_gs)                    
 	if pid == multiplayer.get_unique_id():
 		_players_ui.move_child(pv, 0)      
-	pv.init(_gs)                    # подписка на card_drawn и др. 

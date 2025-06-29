@@ -4,6 +4,5 @@
 
 [node name="Main" type="Node2D"]
 
-[node name="lobby" parent="." node_paths=PackedStringArray("Game") instance=ExtResource("1_0wfyh")]
+[node name="lobby" parent="." instance=ExtResource("1_0wfyh")]
 position = Vector2(2, 2)
-Game = NodePath("")

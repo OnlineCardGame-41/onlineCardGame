@@ -18,17 +18,27 @@ var active_idx := 0           # чей ход в players
 
 
 @rpc("authority", "call_local")
-func start_match(pids:PackedInt32Array) -> void:
-	if not is_multiplayer_authority():
-		return
+func start_match(pids:PackedInt32Array):
+	print(pids, multiplayer.get_unique_id())
 	players = pids
+	rpc("_begin_turn", 0)
 	for pid in players:
 		hands[pid]  = []
 		boards[pid] = []
-		for i in range(4):
-			hands[pid].append(CardDeck.draw())
-	_begin_turn(0)
+		if multiplayer.is_server():
+			for i in range(4):
+				_server_draw(pid)          
+	#for pid in players:               
+		#rpc_id(pid, "receive_hand", hands[pid])
+	print(hands, multiplayer.get_unique_id())
+	
+@rpc("authority", "call_local")
+func receive_hand(my_hand:Array):
+	var id = multiplayer.get_unique_id()
+	hands[id] = my_hand.duplicate()
+	boards[id] = []
 
+@rpc("any_peer", "call_local")
 func _begin_turn(idx:int) -> void:
 	active_idx = idx
 	var pid = players[active_idx]
@@ -42,19 +52,26 @@ func request_draw() -> void:
 	_server_draw(players[active_idx])
 
 func _server_draw(pid:int) -> void:
-	var c := CardDeck.draw()
+	var c = CardDeck.draw()
 	hands[pid].append(c)
 	emit_signal("card_drawn", pid, c)
-
+	rpc("_client_draw", pid, c)  
+	
+@rpc("any_peer")
+func _client_draw(pid:int, color:CardDeck.CardColor):
+	if not hands.has(pid):
+		hands[pid] = []
+	hands[pid].append(color)
+	emit_signal("card_drawn", pid, color)
+	
 @rpc("any_peer")
 func request_play(card_idx:int, to_board:bool) -> void:
 	var pid := multiplayer.get_remote_sender_id()
 	if pid != players[active_idx]:
 		return
-	var c = hands[pid].pop_at(card_idx)
 	if to_board:
-		boards[pid].append(c)
-		emit_signal("card_played", pid, c)
+		var c = hands[pid].pop_at(card_idx)
+		_server_card_played(pid, c)
 	else:
 		_resolve_board(pid)
 	_check_victory(pid)
@@ -63,7 +80,8 @@ func request_play(card_idx:int, to_board:bool) -> void:
 func _resolve_board(pid:int) -> void:
 	var seq = boards[pid]
 	boards[pid] = []
-	emit_signal("board_cleared", pid, seq)
+	_server_board_cleared(pid, seq)
+	
 	if seq.size() > 3:               # заглушка «> 3 карт»
 		_discard_one(pid)
 		_others_draw(pid)
@@ -79,5 +97,41 @@ func _others_draw(except_pid:int) -> void:
 
 func _check_victory(pid:int) -> void:
 	if hands[pid].is_empty() and boards[pid].is_empty():
-		emit_signal("match_ended", pid)
-		rpc("match_ended", pid)     
+		_server_match_ended(pid)     
+		
+		
+func _server_card_played(pid:int, card:int) -> void:
+	boards[pid].append(card)
+	emit_signal("card_played", pid, card)
+	rpc("_client_card_played", pid, card)
+
+@rpc("any_peer")
+func _client_card_played(pid:int, card:int) -> void:
+	if not boards.has(pid):
+		boards[pid] = []
+	boards[pid].append(card)
+	
+	var idx = hands[pid].find(card)
+	if idx != -1:
+		hands[pid].remove_at(idx)
+
+	emit_signal("card_played", pid, card)
+
+func _server_board_cleared(pid:int, seq:Array[int]) -> void:
+	boards[pid] = []
+	emit_signal("board_cleared", pid, seq)
+	rpc("_client_board_cleared", pid, seq)
+
+@rpc("any_peer")
+func _client_board_cleared(pid:int, seq:Array[int]) -> void:
+	boards[pid] = []
+	emit_signal("board_cleared", pid, seq)
+
+
+func _server_match_ended(winner_pid:int) -> void:
+	emit_signal("match_ended", winner_pid)
+	rpc("_client_match_ended", winner_pid)
+
+@rpc("any_peer")
+func _client_match_ended(winner_pid:int) -> void:
+	emit_signal("match_ended", winner_pid)

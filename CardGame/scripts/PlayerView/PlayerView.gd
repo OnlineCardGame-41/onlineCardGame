@@ -5,6 +5,7 @@ class_name PlayerView
 var is_local : bool
 @onready var Hand : ItemList = $Hand
 var _gs : Node    
+@onready var Board = $Board
 
 const LABEL := {
 	CardDeck.CardColor.RED:    "Красная",
@@ -18,20 +19,13 @@ func card_label(c: CardDeck.CardColor) -> String:   return LABEL[c]
 func _ready() -> void:
 	is_local = pid == multiplayer.get_unique_id()
 	if not is_local:
-		self.visible = false   
+		self.visible = false
+	Hand.item_selected.connect(_on_hand_click)   
 
 	
 func init(gs : Node) -> void:
-	_gs = gs
-	_sync_full_hand()            
+	_gs = gs         
 	_connect_signals()
-
-func _sync_full_hand() -> void:
-	Hand.clear()
-	if not _gs.hands.has(pid):
-		return                    # ещё не раздали
-	for color in _gs.hands[pid]:
-		Hand.add_item(card_label(color))
 
 func _connect_signals() -> void:
 	_gs.card_drawn.connect(_on_card_drawn)
@@ -46,10 +40,29 @@ func _on_card_played(play_pid:int, color:CardDeck.CardColor) -> void:
 	if play_pid != pid: return
 	
 	for i in Hand.item_count:
-		if Hand.get_item_label(i) == card_label(color):
+		if Hand.get_item_text(i) == card_label(color):
 			Hand.remove_item(i)
 			break
-
+	_refresh_board()
+	
+func _refresh_board():
+	var seq = _gs.boards.get(pid, [])
+	var text := "%d: %s" % [
+		pid,
+		" ".join(seq.map(func(c): return LABEL.get(c)))
+	]
+	Board.clear()
+	Board.add_item(text)
+	
 func _on_board_cleared(clr_pid:int, _seq:Array[int]) -> void:
 	if clr_pid == pid:          
-		_sync_full_hand()       
+		Board.clear()   
+
+func _on_hand_click(idx: int) -> void:
+	if pid != multiplayer.get_unique_id():          # чужую руку не трогаем
+		return
+	_gs.request_play.rpc(idx, true)
+
+
+func _on_clear_button_pressed() -> void:
+	_gs.request_play.rpc(-1, false)
