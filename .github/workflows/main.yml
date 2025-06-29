@@ -146,11 +146,7 @@ jobs:
         continue-on-error: true  # не ронять workflow, если Android SDK пакеты недоступны
         uses: android-actions/setup-android@v3
         with:
-          packages: |
-            cmdline-tools;latest
-            platform-tools
-            platforms;android-33
-            build-tools;33.0.2
+          packages: "platform-tools platforms;android-33 build-tools;33.0.2"
 
       # ────────────────────────────────────────────────────────────────
       # Build Android export (debug apk, без keystore)
