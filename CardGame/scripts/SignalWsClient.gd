@@ -9,6 +9,7 @@ signal peer_disconnected(pid: int)
 signal offer_received(pid: int, offer: String)
 signal answer_received(pid: int, answer: String)
 signal candidate_received(pid: int, mid: String, index: int, sdp: String)
+signal new_lobby_received(lobby_id: int, host_name: String)
 
 signal we_joined
 
@@ -48,6 +49,9 @@ func join_lobby(lobby_id: int, name: String):
 	
 	peer.lobby_id = lobby_id
 	peer.send_msg(SignalWsMsg.new(lobby_id, SignalWsMsg.Type.JOIN))
+
+func get_lobbies():
+	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.LOBBIES))
 
 func seal_lobby() -> void:
 	if peer == null:
@@ -103,6 +107,8 @@ func handle_peer_msg() -> bool:
 		SignalWsMsg.Type.ANSWER:
 			print("[client] ", peer.peer_id, " answer from ", msg.id)
 			answer_received.emit(msg.id, msg.data)
+		SignalWsMsg.Type.LOBBIES:
+			new_lobby_received.emit(msg.id, str(msg.data))
 
 		SignalWsMsg.Type.CANDIDATE:
 			print("[client] ", peer.peer_id, " candidate from ", msg.id)
