@@ -27,3 +27,4 @@ enabled=PackedStringArray("res://addons/gdLinter/plugin.cfg", "res://addons/gut/
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
