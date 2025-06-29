@@ -14,8 +14,7 @@ jobs:
         shell: bash
 
     env:
-      # Используем доступный релиз Godot 4.4.1
-      GODOT_VERSION: "4.4.1-stable"
+      GODOT_VERSION: "4.4.1-stable"   # реальный релиз Godot
 
     steps:
       # ────────────────────────────────────────────────────────────────
@@ -55,24 +54,21 @@ jobs:
         run: |
           go test ./... -coverprofile=coverage.out -v
 
-      - name: Upload Go coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: go-coverage
           path: Server/server/coverage.out
 
       # ────────────────────────────────────────────────────────────────
-      # Godot headless
+      # Godot + экспортные шаблоны
       # ────────────────────────────────────────────────────────────────
-      # setup-godot автоматически кэширует скачанный движок, если указан cache: true,
-      # поэтому на последующих запусках скачивания не будет → экономим минуты CI.
       - name: Setup Godot
         uses: lihop/setup-godot@v2
         with:
           version: ${{ env.GODOT_VERSION }}
           alias: godot
-          cache: true  # кешируем движок
-          export-templates: true  # скачиваем шаблоны экспорта  # включаем встроенный кеш действия
+          cache: true
+          export-templates: true
 
       # ────────────────────────────────────────────────────────────────
       # Python & gdtoolkit
@@ -90,16 +86,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install gdtoolkit (gdlint / gdformat)
-        run: pip install --upgrade gdtoolkit
+      - run: pip install --upgrade gdtoolkit
+        name: Install gdtoolkit (gdlint / gdformat)
 
       - name: Check GDScript formatting (scripts only)
-        continue-on-error: true  # не прерывать CI, показать только предупреждения
+        continue-on-error: true
         working-directory: CardGame/scripts
         run: gdformat --check .
 
       - name: Lint GDScript (scripts only)
-        continue-on-error: true  # lint‑ошибки как предупреждения
+        continue-on-error: true
         working-directory: CardGame/scripts
         run: gdlint .
 
@@ -115,8 +111,7 @@ jobs:
             -gexit \
             -gjunit_xml_file=res://tests/report.xml
 
-      - name: Upload GUT JUnit report
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: gut-report
           path: CardGame/tests/report.xml
@@ -128,11 +123,56 @@ jobs:
         working-directory: CardGame
         run: |
           mkdir -p ../build/windows
-          godot --headless --path . \
-            --export-release "Windows Desktop" ../build/windows/CardGame.exe
-      
-      - name: Upload Windows build artifact
-        uses: actions/upload-artifact@v4
+          godot --headless --path . --export-release "Windows Desktop" ../build/windows/CardGame.exe
+
+      - uses: actions/upload-artifact@v4
         with:
           name: CardGame-windows
           path: build/windows
+
+      # ────────────────────────────────────────────────────────────────
+      # Java + Android SDK (для Android экспорта)
+      # ────────────────────────────────────────────────────────────────
+      - name: Setup Java 17 (Godot requirement)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |   # минимальный набор для сборки Godot
+            platform-tools
+            platforms;android-33
+            build-tools;34.0.0
+
+      # ────────────────────────────────────────────────────────────────
+      # Build Android export (debug apk, без keystore)
+      # ────────────────────────────────────────────────────────────────
+      - name: Export game for Android (debug)
+        working-directory: CardGame
+        run: |
+          mkdir -p ../build/android
+          godot --headless --path . --export-debug "Android" ../build/android/CardGame-debug.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CardGame-android-debug
+          path: build/android
+
+      # ────────────────────────────────────────────────────────────────
+      # Build macOS export (unsigned)
+      # ────────────────────────────────────────────────────────────────
+      - name: Export game for macOS (universal, unsigned)
+        working-directory: CardGame
+        run: |
+          mkdir -p ../build/macos
+          godot --headless --path . --export-release "macOS" ../build/macos/CardGame.app
+          # упакуем в zip для удобства
+          cd ../build/macos && zip -r CardGame-mac.zip CardGame.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CardGame-macos
+          path: build/macos/CardGame-mac.zip
