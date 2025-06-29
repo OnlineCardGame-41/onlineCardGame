@@ -120,7 +120,7 @@ func _on_join_button_pressed() -> void:
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
 	
-	rtc_mesh.create_client(id)
+	rtc_mesh.create_client(2)
 	multiplayer.multiplayer_peer = rtc_mesh
 
 func _on_take_card_pressed() -> void:
@@ -171,7 +171,6 @@ func _spawn_pc(pid: int, polite: bool) -> WebRTCPeerConnection:
 			client.send_candidate(pid, mid, idx, sdp)
 	)
 
-	# 🟢 Только потом добавляем peer
 	rtc_mesh.add_peer(pc, pid)
 
 	print("Created peer connection with: ", pid)
@@ -246,9 +245,8 @@ func game_start():
 	get_parent().add_child(gm)
 	self.visible = false
 	var gs : Node = gm.get_node("GameState")
-	var peer_ids : PackedInt32Array = multiplayer.get_peers()
-	peer_ids.push_back(multiplayer.get_unique_id())   
-	peer_ids.sort()
+	var peer_ids : PackedInt32Array = [multiplayer.get_unique_id()]
+	peer_ids.append_array(multiplayer.get_peers())
 	if multiplayer.is_server():
 		gs.start_match.rpc(peer_ids)
 
@@ -280,6 +278,5 @@ func _on_join_list_pressed() -> void:
 	var id = LobbiesList.get_item_metadata(index)
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
-	
-	rtc_mesh.create_client(id)
+	rtc_mesh.create_client(2)
 	multiplayer.multiplayer_peer = rtc_mesh
