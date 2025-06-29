@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj5evghtr02im"]
+
+[ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
+
+[node name="PlayerView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vtsk7")
+
+[node name="Table" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 323.0
+offset_top = 492.0
+offset_right = 1053.0
+offset_bottom = 643.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Hand" type="ItemList" parent="."]
+offset_top = 396.0
+offset_right = 320.0
+offset_bottom = 652.0
+metadata/_edit_use_anchors_ = true

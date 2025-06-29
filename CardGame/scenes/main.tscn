@@ -1,14 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://b758wfkg6h3ht"]
+[gd_scene load_steps=2 format=3 uid="uid://b758wfkg6h3ht"]
 
 [ext_resource type="PackedScene" uid="uid://bhaie0j4aahet" path="res://scenes/lobby.tscn" id="1_0wfyh"]
-[ext_resource type="PackedScene" uid="uid://dvoyvtf17v0ie" path="res://scenes/Game.tscn" id="2_sugp2"]
 
 [node name="Main" type="Node2D"]
 
 [node name="lobby" parent="." node_paths=PackedStringArray("Game") instance=ExtResource("1_0wfyh")]
 position = Vector2(2, 2)
-Game = NodePath("../Game")
-
-[node name="Game" parent="." instance=ExtResource("2_sugp2")]
-visible = false
-position = Vector2(2, 1)
+Game = NodePath("")

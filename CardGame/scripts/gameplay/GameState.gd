@@ -1,8 +1,8 @@
 extends Node
 
 signal turn_started(pid:int, time_left:float)
-signal card_drawn(pid:int, card:int)     # CardDeck.Color
-signal card_played(pid:int, card:int)
+signal card_drawn(pid:int, card:CardDeck)     # CardDeck.Color
+signal card_played(pid:int, card:CardDeck)
 signal board_cleared(pid:int, seq:Array[int])
 signal match_ended(winner_pid:int)
 
@@ -14,8 +14,13 @@ var boards : Dictionary       # pid → Array[int]
 var active_idx := 0           # чей ход в players
 @onready var turn_timer := $TurnTimer    # Node «Timer»
 
-@rpc("authority")
+
+
+
+@rpc("authority", "call_local")
 func start_match(pids:PackedInt32Array) -> void:
+	if not is_multiplayer_authority():
+		return
 	players = pids
 	for pid in players:
 		hands[pid]  = []
