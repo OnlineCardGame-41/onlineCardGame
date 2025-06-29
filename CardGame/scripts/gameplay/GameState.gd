@@ -1,8 +1,8 @@
 extends Node
 
 signal turn_started(pid:int, time_left:float)
-signal card_drawn(pid:int, card:CardDeck)     # CardDeck.Color
-signal card_played(pid:int, card:CardDeck)
+signal card_drawn(pid:int, card:CardDeck.CardColor)     # CardDeck.CardColor
+signal card_played(pid:int, card:CardDeck.CardColor)
 signal board_cleared(pid:int, seq:Array[int])
 signal match_ended(winner_pid:int)
 
@@ -12,7 +12,7 @@ var players : PackedInt32Array
 var hands : Dictionary        # pid → Array[int]
 var boards : Dictionary       # pid → Array[int]
 var active_idx := 0           # чей ход в players
-@onready var turn_timer := $TurnTimer    # Node «Timer»
+@onready var turn_timer := $"../TurnTimer"    # Node «Timer»
 
 
 
@@ -80,4 +80,4 @@ func _others_draw(except_pid:int) -> void:
 func _check_victory(pid:int) -> void:
 	if hands[pid].is_empty() and boards[pid].is_empty():
 		emit_signal("match_ended", pid)
-		rpc("match_ended", pid)      # уведомить всех
+		rpc("match_ended", pid)     
