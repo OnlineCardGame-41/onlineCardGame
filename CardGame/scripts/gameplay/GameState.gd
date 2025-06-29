@@ -54,7 +54,7 @@ func _client_draw(pid:int, color:CardDeck.CardColor):
 	if not hands.has(pid):
 		hands[pid] = []
 	hands[pid].append(color)
-	emit_signal("card_drawn", pid, color)
+	emit_signal("card_drawn", pid, color) 
 	
 @rpc("any_peer")
 func request_play(card_idx:int, to_board:bool) -> void:
