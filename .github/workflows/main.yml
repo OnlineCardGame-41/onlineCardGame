@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml
 name: CI
 
 on:
@@ -63,12 +64,15 @@ jobs:
       # ────────────────────────────────────────────────────────────────
       # Godot headless
       # ────────────────────────────────────────────────────────────────
+      # setup-godot автоматически кэширует скачанный движок, если указан cache: true,
+      # поэтому на последующих запусках скачивания не будет → экономим минуты CI.
       - name: Setup Godot
         uses: lihop/setup-godot@v2
         with:
           version: ${{ env.GODOT_VERSION }}
           alias: godot
-          cache: true
+          cache: true  # кешируем движок
+          export-templates: true  # скачиваем шаблоны экспорта  # включаем встроенный кеш действия
 
       # ────────────────────────────────────────────────────────────────
       # Python & gdtoolkit
@@ -90,8 +94,9 @@ jobs:
         run: pip install --upgrade gdtoolkit
 
       - name: Check GDScript formatting (scripts only)
+        continue-on-error: true  # не прерывать CI, показать только предупреждения
         working-directory: CardGame/scripts
-        run: gdformat .
+        run: gdformat --check .
 
       - name: Lint GDScript (scripts only)
         continue-on-error: true  # lint‑ошибки как предупреждения
@@ -115,3 +120,19 @@ jobs:
         with:
           name: gut-report
           path: CardGame/tests/report.xml
+
+      # ────────────────────────────────────────────────────────────────
+      # Build Windows export
+      # ────────────────────────────────────────────────────────────────
+      - name: Export game for Windows
+        working-directory: CardGame
+        run: |
+          mkdir -p ../build/windows
+          godot --headless --path . \
+            --export-release "Windows Desktop" ../build/windows/CardGame.exe
+      
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CardGame-windows
+          path: build/windows
