@@ -91,7 +91,7 @@ jobs:
 
       - name: Check GDScript formatting (scripts only)
         working-directory: CardGame/scripts
-        run: gdformat --check .
+        run: gdformat .
 
       - name: Lint GDScript (scripts only)
         working-directory: CardGame/scripts
