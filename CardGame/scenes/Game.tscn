@@ -15,6 +15,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
 
 [node name="TimerLabel" type="Label" parent="Hud"]
 layout_mode = 0
@@ -23,19 +24,12 @@ offset_top = 3.0
 offset_right = 652.0
 offset_bottom = 68.0
 
-[node name="DrawButton" type="Button" parent="Hud"]
-layout_mode = 0
-offset_left = 1030.0
-offset_top = 519.0
-offset_right = 1152.0
-offset_bottom = 651.0
-text = "Take Card"
-
 [node name="Board" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
 
 [node name="GameState" type="Node" parent="."]
 script = ExtResource("2_qbsmt")
@@ -45,3 +39,4 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
