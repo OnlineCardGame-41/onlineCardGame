@@ -5,7 +5,7 @@ import "testing"
 
 func TestPasses(t *testing.T) {
 	// Тест пройдёт, потому что 1 == 1.
-	if 1 == 1 {
+	if 1 != 2 {
 		t.Fatalf("ожидали 1 == 1")
 	}
 }
