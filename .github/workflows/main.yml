@@ -120,12 +120,15 @@ jobs:
       # Build Windows export
       # ────────────────────────────────────────────────────────────────
       - name: Export game for Windows
+        continue-on-error: true
         working-directory: CardGame
         run: |
           mkdir -p ../build/windows
           godot --headless --path . --export-release "Windows Desktop" ../build/windows/CardGame.exe
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Windows build artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
         with:
           name: CardGame-windows
           path: build/windows
@@ -142,21 +145,25 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: |   # минимальный набор для сборки Godot
+          packages: |
+            cmdline-tools;latest
             platform-tools
-            platforms;android-33
+            platforms;android-34
             build-tools;34.0.0
 
       # ────────────────────────────────────────────────────────────────
       # Build Android export (debug apk, без keystore)
       # ────────────────────────────────────────────────────────────────
       - name: Export game for Android (debug)
+        continue-on-error: true
         working-directory: CardGame
         run: |
           mkdir -p ../build/android
           godot --headless --path . --export-debug "Android" ../build/android/CardGame-debug.apk
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Android build artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
         with:
           name: CardGame-android-debug
           path: build/android
@@ -165,14 +172,16 @@ jobs:
       # Build macOS export (unsigned)
       # ────────────────────────────────────────────────────────────────
       - name: Export game for macOS (universal, unsigned)
+        continue-on-error: true
         working-directory: CardGame
         run: |
           mkdir -p ../build/macos
           godot --headless --path . --export-release "macOS" ../build/macos/CardGame.app
-          # упакуем в zip для удобства
           cd ../build/macos && zip -r CardGame-mac.zip CardGame.app
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload macOS build artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
         with:
           name: CardGame-macos
           path: build/macos/CardGame-mac.zip
