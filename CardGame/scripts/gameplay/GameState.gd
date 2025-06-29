@@ -112,13 +112,13 @@ func _client_card_played(pid:int, card:int) -> void:
 
 	emit_signal("card_played", pid, card)
 
-func _server_board_cleared(pid:int, seq:Array[int]) -> void:
+func _server_board_cleared(pid:int, seq:Array) -> void:
 	boards[pid] = []
 	emit_signal("board_cleared", pid, seq)
 	rpc("_client_board_cleared", pid, seq)
 
 @rpc("any_peer")
-func _client_board_cleared(pid:int, seq:Array[int]) -> void:
+func _client_board_cleared(pid:int, seq:Array) -> void:
 	boards[pid] = []
 	emit_signal("board_cleared", pid, seq)
 
