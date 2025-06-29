@@ -16,6 +16,7 @@ signal we_joined
 var peer: SignalWsPeer
 var prev_state := WebSocketPeer.STATE_CLOSED
 
+
 # Connect to server. Connect to given lobby_id, or if lobby_id is not provided,
 # the client will host a new game
 func connect_to_server(server_url: String) -> void:
@@ -30,28 +31,33 @@ func connect_to_server(server_url: String) -> void:
 	peer.ws.connect_to_url(server_url)
 	peer.lobby_id = 0
 
+
 func host_lobby(name: String):
 	update_name(name)
 	if peer == null or not peer.is_open():
 		print("Error: Not connected to server.")
 		return
-	
+
 	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.HOST))
+
 
 func update_name(name: String):
 	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.UPDATENAME, name))
+
 
 func join_lobby(lobby_id: int, name: String):
 	update_name(name)
 	if peer == null or not peer.is_open():
 		print("Error: Not connected to server.")
 		return
-	
+
 	peer.lobby_id = lobby_id
 	peer.send_msg(SignalWsMsg.new(lobby_id, SignalWsMsg.Type.JOIN))
 
+
 func get_lobbies():
 	peer.send_msg(SignalWsMsg.new(0, SignalWsMsg.Type.LOBBIES))
+
 
 func seal_lobby() -> void:
 	if peer == null:
@@ -64,6 +70,7 @@ func seal_lobby() -> void:
 
 	print("[client] Sealing lobby with id: ", peer.lobby_id)
 	peer.send_msg(SignalWsMsg.new(peer.lobby_id, SignalWsMsg.Type.SEAL))
+
 
 # Handle current peer message
 func handle_peer_msg() -> bool:
@@ -131,6 +138,7 @@ func handle_peer_msg() -> bool:
 
 	return true
 
+
 func poll() -> void:
 	if peer == null:
 		return
@@ -149,11 +157,14 @@ func poll() -> void:
 		if not handle_peer_msg():
 			print("Error parsing signal message.")
 
+
 func send_offer(pid: int, offer: String) -> void:
 	peer.send_msg(SignalWsMsg.new(pid, SignalWsMsg.Type.OFFER, offer))
 
+
 func send_answer(pid: int, answer: String) -> void:
 	peer.send_msg(SignalWsMsg.new(pid, SignalWsMsg.Type.ANSWER, answer))
+
 
 func send_candidate(pid: int, mid: String, index: int, sdp: String) -> void:
 	var data = mid + "|" + str(index) + "|" + sdp

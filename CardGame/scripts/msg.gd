@@ -1,7 +1,6 @@
 # Messages passed over WebSocket connections
 class_name SignalWsMsg
 
-
 # Message types for WebSocket messages
 enum Type {
 	INVALID = 0,
@@ -18,7 +17,6 @@ enum Type {
 	UPDATENAME
 }
 
-
 # Primary message payload. This could be a peer id or a
 # lobby id depending on the message type
 var id: int
@@ -29,11 +27,13 @@ var type: Type
 # Additional payload that some messages carry
 var data: String
 
+
 # Construct a new Msg objects (gets called by Msg.new())
 func _init(id_: int, type_: Type, data_: String = "") -> void:
 	id = id_
 	type = type_
 	data = data_
+
 
 # Parse a message string in the form of "type|pid|data" to a Msg object
 static func parse(msg_str: String) -> SignalWsMsg:
@@ -53,6 +53,7 @@ static func parse(msg_str: String) -> SignalWsMsg:
 		return null
 
 	return SignalWsMsg.new(id_, type_, data_)
+
 
 # Convert this message to a string in the form of "type|pid|data"
 func stringify() -> String:
