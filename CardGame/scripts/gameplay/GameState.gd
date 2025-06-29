@@ -16,7 +16,6 @@ var active_idx := 0           # чей ход в players
 
 
 
-
 @rpc("authority", "call_local")
 func start_match(pids:PackedInt32Array):
 	print(pids, multiplayer.get_unique_id())
@@ -28,15 +27,8 @@ func start_match(pids:PackedInt32Array):
 		if multiplayer.is_server():
 			for i in range(4):
 				_server_draw(pid)          
-	#for pid in players:               
-		#rpc_id(pid, "receive_hand", hands[pid])
 	print(hands, multiplayer.get_unique_id())
 	
-@rpc("authority", "call_local")
-func receive_hand(my_hand:Array):
-	var id = multiplayer.get_unique_id()
-	hands[id] = my_hand.duplicate()
-	boards[id] = []
 
 @rpc("any_peer", "call_local")
 func _begin_turn(idx:int) -> void:
@@ -66,7 +58,7 @@ func _client_draw(pid:int, color:CardDeck.CardColor):
 	
 @rpc("any_peer")
 func request_play(card_idx:int, to_board:bool) -> void:
-	var pid := multiplayer.get_remote_sender_id()
+	var pid = multiplayer.get_remote_sender_id()
 	if pid != players[active_idx]:
 		return
 	if to_board:
@@ -75,8 +67,9 @@ func request_play(card_idx:int, to_board:bool) -> void:
 	else:
 		_resolve_board(pid)
 	_check_victory(pid)
-	_begin_turn((active_idx + 1) % players.size())
+	_begin_turn.rpc((active_idx + 1) % players.size())
 
+@rpc("any_peer", "call_local")
 func _resolve_board(pid:int) -> void:
 	var seq = boards[pid]
 	boards[pid] = []
@@ -87,10 +80,12 @@ func _resolve_board(pid:int) -> void:
 		_others_draw(pid)
 
 func _discard_one(pid:int) -> void:
+	if not multiplayer.is_server(): return
 	if hands[pid].size() > 0:
 		hands[pid].pop_back()
 
 func _others_draw(except_pid:int) -> void:
+	if not multiplayer.is_server(): return
 	for p in players:
 		if p != except_pid:
 			_server_draw(p)
