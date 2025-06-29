@@ -37,7 +37,8 @@ func _on_card_drawn(draw_pid:int, color:CardDeck.CardColor) -> void:
 	Hand.add_item(card_label(color))
 
 func _on_card_played(play_pid:int, color:CardDeck.CardColor) -> void:
-	if play_pid != pid: return
+	if play_pid != pid: 
+		return
 	
 	for i in Hand.item_count:
 		if Hand.get_item_text(i) == card_label(color):
@@ -45,6 +46,7 @@ func _on_card_played(play_pid:int, color:CardDeck.CardColor) -> void:
 			break
 	_refresh_board()
 	
+
 func _refresh_board():
 	var seq = _gs.boards.get(pid, [])
 	var text := "%d: %s" % [
