@@ -192,5 +192,5 @@ jobs:
       #   continue-on-error: true
       #   uses: actions/upload-artifact@v4
       #   with:
-          name: CardGame-macos
-          path: build/macos/CardGame-mac.zip
+          # name: CardGame-macos
+          # path: build/macos/CardGame-mac.zip
