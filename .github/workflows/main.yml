@@ -69,6 +69,9 @@ jobs:
           alias: godot
           cache: true
           export-templates: true
+      - name: Import Godot resources (required for GUT)
+        working-directory: CardGame
+        run: godot --headless --import
 
       # ────────────────────────────────────────────────────────────────
       # Python & gdtoolkit
