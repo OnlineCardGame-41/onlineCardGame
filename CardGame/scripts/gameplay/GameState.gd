@@ -1,5 +1,5 @@
 extends Node
-
+class_name GameState
 signal turn_started(pid: int, time_left: float)
 signal card_drawn(pid: int, card: CardDeck.CardColor)  # CardDeck.CardColor
 signal card_played(pid: int, card: CardDeck.CardColor)

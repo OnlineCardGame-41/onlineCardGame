@@ -7,8 +7,8 @@ const TIMEOUT_MS = 1_000
 
 var peer_id: int
 var lobby_id: int
-var created_at := Time.get_ticks_msec()
-var ws := WebSocketPeer.new()
+var created_at = Time.get_ticks_msec()
+var ws = WebSocketPeer.new()
 
 
 func _init(id: int) -> void:
