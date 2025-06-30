@@ -108,7 +108,7 @@ jobs:
       - name: Run GUT tests
         working-directory: CardGame
         run: |
-          godot  --headless \
+          godot --headless \
             -s addons/gut/gut_cmdln.gd \
             -gdir=res://tests \
             -gexit \
