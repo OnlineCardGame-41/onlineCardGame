@@ -108,7 +108,7 @@ jobs:
       - name: Run GUT tests
         working-directory: CardGame
         run: |
-          godot --no-window --headless \
+          godot  --headless \
             -s addons/gut/gut_cmdln.gd \
             -gdir=res://tests \
             -gexit \
@@ -136,61 +136,61 @@ jobs:
           name: CardGame-windows
           path: build/windows
 
-      # ────────────────────────────────────────────────────────────────
-      # Java + Android SDK (для Android экспорта)
-      # ────────────────────────────────────────────────────────────────
-      - name: Setup Java 17 (Godot requirement)
-        uses: actions/setup-java@v4
-        with:
-          distribution: "temurin"
-          java-version: "17"
+      # # ────────────────────────────────────────────────────────────────
+      # # Java + Android SDK (для Android экспорта)
+      # # ────────────────────────────────────────────────────────────────
+      # - name: Setup Java 17 (Godot requirement)
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: "temurin"
+      #     java-version: "17"
 
-      - name: Setup Android SDK
-        continue-on-error: true  # не ронять workflow, если Android SDK пакеты недоступны
-        uses: android-actions/setup-android@v3
-        with:
-          packages: "platform-tools platforms;android-33 build-tools;33.0.2"
+      # - name: Setup Android SDK
+      #   continue-on-error: true  # не ронять workflow, если Android SDK пакеты недоступны
+      #   uses: android-actions/setup-android@v3
+      #   with:
+      #     packages: "platform-tools platforms;android-33 build-tools;33.0.2"
 
-      - name: Download Android build template
-        continue-on-error: true  
-        working-directory: CardGame
-        run: |
-          wget https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
-          mkdir -p android/build
-          unzip -o Godot_v4.4.1-stable_export_templates.tpz android_source.zip
-          unzip -o android_source.zip -d android/build
+      # - name: Download Android build template
+      #   continue-on-error: true  
+      #   working-directory: CardGame
+      #   run: |
+      #     wget https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
+      #     mkdir -p android/build
+      #     unzip -o Godot_v4.4.1-stable_export_templates.tpz android_source.zip
+      #     unzip -o android_source.zip -d android/build
 
-      # ────────────────────────────────────────────────────────────────
-      # Build Android export (debug apk, без keystore)
-      # ────────────────────────────────────────────────────────────────
-      - name: Export game for Android (debug)
-        continue-on-error: true
-        working-directory: CardGame
-        run: |
-          mkdir -p ../build/android
-          godot --headless --path . --export-debug "Android" ../build/android/CardGame-debug.apk
+      # # ────────────────────────────────────────────────────────────────
+      # # Build Android export (debug apk, без keystore)
+      # # ────────────────────────────────────────────────────────────────
+      # - name: Export game for Android (debug)
+      #   continue-on-error: true
+      #   working-directory: CardGame
+      #   run: |
+      #     mkdir -p ../build/android
+      #     godot --headless --path . --export-debug "Android" ../build/android/CardGame-debug.apk
 
-      - name: Upload Android build artifact
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: CardGame-android-debug
-          path: build/android
+      # - name: Upload Android build artifact
+      #   continue-on-error: true
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: CardGame-android-debug
+      #     path: build/android
 
-      # ────────────────────────────────────────────────────────────────
-      # Build macOS export (unsigned)
-      # ────────────────────────────────────────────────────────────────
-      - name: Export game for macOS (universal, unsigned)
-        continue-on-error: true
-        working-directory: CardGame
-        run: |
-          mkdir -p ../build/macos
-          godot --headless --path . --export-release "macOS" ../build/macos/CardGame.app
-          cd ../build/macos && zip -r CardGame-mac.zip CardGame.app
+      # # ────────────────────────────────────────────────────────────────
+      # # Build macOS export (unsigned)
+      # # ────────────────────────────────────────────────────────────────
+      # - name: Export game for macOS (universal, unsigned)
+      #   continue-on-error: true
+      #   working-directory: CardGame
+      #   run: |
+      #     mkdir -p ../build/macos
+      #     godot --headless --path . --export-release "macOS" ../build/macos/CardGame.app
+      #     cd ../build/macos && zip -r CardGame-mac.zip CardGame.app
 
-      - name: Upload macOS build artifact
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
+      # - name: Upload macOS build artifact
+      #   continue-on-error: true
+      #   uses: actions/upload-artifact@v4
+      #   with:
           name: CardGame-macos
           path: build/macos/CardGame-mac.zip
