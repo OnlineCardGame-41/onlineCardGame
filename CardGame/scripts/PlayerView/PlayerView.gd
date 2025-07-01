@@ -6,6 +6,7 @@ var is_local: bool
 @onready var Hand: ItemList = $Hand
 var _gs: Node
 @onready var Board = $Board
+@onready var Turn = $Turn
 
 const LABEL := {
 	CardDeck.CardColor.RED: "Красная",
@@ -34,7 +35,13 @@ func _connect_signals() -> void:
 	_gs.card_drawn.connect(_on_card_drawn)
 	_gs.card_played.connect(_on_card_played)
 	_gs.board_cleared.connect(_on_board_cleared)
+	_gs.turn_started.connect(_on_turn_started)
 
+func _on_turn_started(turn_pid: int, time_left: float):
+	if turn_pid == pid:
+		Turn.text = "Your Turn"
+	else:
+		Turn.text = "Turn of %d" % turn_pid
 
 func _on_card_drawn(draw_pid: int, color: CardDeck.CardColor) -> void:
 	if draw_pid != pid:
@@ -55,7 +62,7 @@ func _refresh_board():
 	Board.clear()
 	for p in _gs.players:
 		var seq = _gs.boards.get(p, [])
-		var text := "%d: %s" % [p, " ".join(seq.map(func(c): return LABEL.get(c)))]
+		var text := "%s: %s" % [(str(p) if p != pid else "You"), " ".join(seq.map(func(c): return LABEL.get(c)))]
 		Board.add_item(text)
 
 

@@ -24,7 +24,7 @@ var ice_servers := [
 	{"urls": "stun:stun.l.google.com:19302"},  #Stun and Turn server adresses and credentials
 	{"urls": "stun:stun1.l.google.com:3478"},
 	{
-		"urls": "relay1.expressturn.com:3480",
+		"urls": "turn:relay1.expressturn.com:3480",
 		"username": "000000002065841620",
 		"credential": "xPemnFVrdPUHMn7nliW+mHLxxt8="
 	}
@@ -96,16 +96,17 @@ func _ready() -> void:
 
 	rtc_mesh = WebRTCMultiplayerPeer.new()
 
+	client.connected.connect(_on_connected)
 	client.lobby_hosted.connect(_on_lobby_hosted)
 	client.lobby_joined.connect(_on_lobby_joined)
 	client.lobby_sealed.connect(_on_lobby_sealed)
+	client.peer_connected.connect(_on_peer_connected)
+	client.peer_disconnected.connect(_on_peer_disconected)
 	client.offer_received.connect(_on_offer_received)
 	client.answer_received.connect(_on_answer_received)
 	client.candidate_received.connect(_on_candidate_received)
-	client.we_joined.connect(_on_we_joined)
-	client.peer_connected.connect(_on_peer_connected)
 	client.new_lobby_received.connect(_on_new_lobby_received)
-
+	client.we_joined.connect(_on_we_joined)
 	client.connect_to_server(websocket_url)
 
 
@@ -127,9 +128,9 @@ func _on_join_button_pressed() -> void:
 	var id = int(LobbyId_getter.text)
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
-
-	rtc_mesh.create_client(2)
-	multiplayer.multiplayer_peer = rtc_mesh
+	print(client.peer.peer_id)
+	#rtc_mesh.create_client(2)
+	#multiplayer.multiplayer_peer = rtc_mesh
 
 
 func _on_take_card_pressed() -> void:
@@ -302,5 +303,11 @@ func _on_join_list_pressed() -> void:
 	var id = LobbiesList.get_item_metadata(index)
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
-	rtc_mesh.create_client(2)
+
+
+func _on_connected(pid: int):
+	rtc_mesh.create_client(pid)
 	multiplayer.multiplayer_peer = rtc_mesh
+	
+func _on_peer_disconected(pid: int):
+	pass
