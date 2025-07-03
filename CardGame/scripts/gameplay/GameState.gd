@@ -1,5 +1,6 @@
-extends Node
 class_name GameState
+extends Node
+
 signal turn_started(pid: int, time_left: float)
 signal card_drawn(pid: int, card: CardDeck.CardColor)  # CardDeck.CardColor
 signal card_played(pid: int, card: CardDeck.CardColor)
@@ -38,7 +39,7 @@ func _begin_turn(idx: int) -> void:
 
 @rpc("any_peer")
 func request_draw() -> void:
-	if multiplayer.get_remote_sender_id() != players[active_idx]:
+	if multiplayer.get_unique_id() != players[active_idx]:
 		return
 	_server_draw(players[active_idx])
 
@@ -60,7 +61,8 @@ func _client_draw(pid: int, color: CardDeck.CardColor):
 
 @rpc("any_peer")
 func request_play(card_idx: int, to_board: bool) -> void:
-	var pid = multiplayer.get_remote_sender_id()
+	#var pid = multiplayer.get_remote_sender_id()
+	var pid = multiplayer.get_unique_id()
 	if pid != players[active_idx]:
 		return
 	if to_board:
@@ -84,24 +86,15 @@ func finish():
 @rpc("any_peer", "call_local")
 func _resolve_board(pid: int) -> void:
 	var seq = boards[pid]
-	boards[pid] = []
 	_server_board_cleared(pid, seq)
 
-	if seq.size() >= 3:
-		_discard_one(pid)
-		_others_draw(pid)
 
-
-func _discard_one(pid: int) -> void:
-	if not multiplayer.is_server():
-		return
-	if hands[pid].size() > 0:
-		hands[pid].pop_back()
+func _server_discard_card(discard_pid: int) -> void:
+	if not hands[discard_pid].is_empty():
+		hands[discard_pid].pop_back()
 
 
 func _others_draw(except_pid: int) -> void:
-	if not multiplayer.is_server():
-		return
 	for p in players:
 		if p != except_pid:
 			_server_draw(p)
@@ -133,8 +126,44 @@ func _client_card_played(pid: int, card: int) -> void:
 
 func _server_board_cleared(pid: int, seq: Array) -> void:
 	boards[pid] = []
+	match_cards(seq)
 	emit_signal("board_cleared", pid, seq)
 	rpc("_client_board_cleared", pid, seq)
+
+#0-R, 1-Y, 2-B
+func match_cards(seq: Array):
+	match seq:
+		[0, 0, 0]: print("000")
+		[0, 0, 1]: print("001")
+		[0, 0, 2]: print("002")
+		[0, 1, 0]: print("010")
+		[0, 1, 1]: print("011")
+		[0, 1, 2]: print("012")
+		[0, 2, 0]: print("020")
+		[0, 2, 1]: print("021")
+		[0, 2, 2]: print("022")
+		[1, 0, 0]: print("100")
+		[1, 0, 1]: print("101")
+		[1, 0, 2]: print("102")
+		[1, 1, 0]: print("110")
+		[1, 1, 1]: print("111")
+		[1, 1, 2]: print("112")
+		[1, 2, 0]: print("120")
+		[1, 2, 1]: print("121")
+		[1, 2, 2]: print("122")
+		[2, 0, 0]: print("200")
+		[2, 0, 1]: print("201")
+		[2, 0, 2]: print("202")
+		[2, 1, 0]: print("210")
+		[2, 1, 1]: print("211")
+		[2, 1, 2]: print("212")
+		[2, 2, 0]: print("220")
+		[2, 2, 1]: print("221")
+		[2, 2, 2]: print("222")
+		_:
+			print("no match")
+
+
 
 
 @rpc("any_peer")

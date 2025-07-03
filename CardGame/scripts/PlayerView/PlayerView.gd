@@ -1,18 +1,20 @@
-extends Control
 class_name PlayerView
+extends Control
 
-@export var pid: int
-var is_local: bool
-@onready var Hand: ItemList = $Hand
-var _gs: Node
-@onready var Board = $Board
-@onready var Turn = $Turn
 
 const LABEL := {
 	CardDeck.CardColor.RED: "Красная",
 	CardDeck.CardColor.YELLOW: "Жёлтая",
 	CardDeck.CardColor.BLUE: "Синяя",
 }
+
+@export var pid: int
+@export var Hand: ItemList
+@export var Board: ItemList
+@export var Turn : RichTextLabel
+
+var is_local: bool
+var _gs: Node
 
 
 func card_label(c: CardDeck.CardColor) -> String:
@@ -62,22 +64,30 @@ func _refresh_board():
 	Board.clear()
 	for p in _gs.players:
 		var seq = _gs.boards.get(p, [])
-		var text := "%s: %s" % [(str(p) if p != pid else "You"), " ".join(seq.map(func(c): return LABEL.get(c)))]
+		var text := "%s: %s" % [(str(p) if p != pid else "You"),
+		" ".join(seq.map(func(c): return LABEL.get(c)))]
 		Board.add_item(text)
+
+
+func _refresh_hand():
+	Hand.clear()
+	for c in _gs.hands[pid]:
+		Hand.add_item(card_label(c))
 
 
 func _on_board_cleared(clr_pid: int, _seq: Array) -> void:
 	_refresh_board()
+	_refresh_hand()
 
 
 func _on_hand_click(idx: int) -> void:
 	if pid != multiplayer.get_unique_id():  # чужую руку не трогаем
 		return
-	_gs.request_play.rpc(idx, true)
+	_gs.request_play(idx, true)
 
 
 func _on_clear_button_pressed() -> void:
-	_gs.request_play.rpc(-1, false)
+	_gs.request_play(-1, false)
 
 
 func _on_finish_button_pressed() -> void:

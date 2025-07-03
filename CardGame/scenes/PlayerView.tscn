@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
 
-[node name="PlayerView" type="Control"]
+[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vtsk7")
+Hand = NodePath("Hand")
+Board = NodePath("Board")
+Turn = NodePath("Turn")
 
 [node name="Hand" type="ItemList" parent="."]
 layout_mode = 0
@@ -21,7 +24,7 @@ metadata/_edit_use_anchors_ = true
 [node name="ClearButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 760.0
-offset_top = 490.0
+offset_top = 522.0
 offset_right = 1149.0
 offset_bottom = 647.0
 text = "Clear Table"
@@ -49,6 +52,13 @@ offset_left = 431.0
 offset_top = 48.0
 offset_right = 684.0
 offset_bottom = 88.0
+
+[node name="Players" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 759.0
+offset_top = 401.0
+offset_right = 1149.0
+offset_bottom = 520.0
 
 [connection signal="item_clicked" from="Hand" to="." method="_on_hand_item_clicked"]
 [connection signal="pressed" from="ClearButton" to="." method="_on_clear_button_pressed"]
