@@ -31,6 +31,9 @@ func _ready() -> void:
 func init(gs: Node) -> void:
 	_gs = gs
 	_connect_signals()
+	_refresh_hand()   
+	_refresh_board()
+	_on_turn_started(1, 30.0)
 
 
 func _connect_signals() -> void:
@@ -76,7 +79,7 @@ func _refresh_hand():
 
 
 func _on_board_cleared(clr_pid: int, _seq: Array) -> void:
-	_refresh_board()
+	_refresh_board() 
 	_refresh_hand()
 
 

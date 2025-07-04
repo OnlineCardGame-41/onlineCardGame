@@ -6,7 +6,6 @@ extends Node2D
 
 
 func _ready() -> void:
-	# Подписываемся на сигнал, который GameState шлёт после раздачи карт
 	_gs.connect("turn_started", Callable(self, "_on_first_turn_started"), CONNECT_ONE_SHOT)
 
 
