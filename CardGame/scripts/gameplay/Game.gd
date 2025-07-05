@@ -10,8 +10,7 @@ func _ready() -> void:
 
 
 func _on_first_turn_started(_pid: int, _time: float) -> void:
-	for pid in _gs.players:
-		_spawn_player_view(pid)
+	_spawn_player_view(multiplayer.get_unique_id())
 
 
 func _spawn_player_view(pid: int) -> void:
@@ -19,5 +18,6 @@ func _spawn_player_view(pid: int) -> void:
 	pv.pid = pid
 	_players_ui.add_child(pv)
 	pv.init(_gs)
+	_gs._set_player_view(pv)
 	if pid == multiplayer.get_unique_id():
 		_players_ui.move_child(pv, 0)

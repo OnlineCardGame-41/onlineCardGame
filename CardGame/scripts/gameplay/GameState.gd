@@ -10,7 +10,7 @@ signal match_ended(winner_pid: int)
 signal shield_changed(pid: int, count: int)
 signal curse_added(pid: int, turns: int)      # новое проклятье
 
-@export var turn_time := 5.0  # секунд на ход
+@export var turn_time := 40.0  # секунд на ход
 
 var players: PackedInt32Array
 var hands: Dictionary = {}
@@ -19,7 +19,7 @@ var shields: Dictionary = {}         # pid -> shield count
 var curses: Dictionary = {}   # pid -> [turns]
 var active_idx = 0
 @onready var turn_timer := $"../TurnTimer"
-
+var pv: Control
 # ---------------------------------------------------------------------------
 # Match lifecycle
 # ---------------------------------------------------------------------------
@@ -92,10 +92,11 @@ func request_play(card_idx: int, to_board: bool) -> void:
 		var card = hands[pid][card_idx]
 		_play_card(pid, card)
 	else:
-		_resolve_board(pid)
+		await _resolve_board(pid)
 
 	_check_victory(pid)
 	_begin_turn.rpc((active_idx + 1) % players.size())
+	
 
 
 func finish() -> void:
@@ -116,7 +117,7 @@ func _apply_draw(pid: int, card: CardDeck.CardColor) -> void:
 	emit_signal("card_drawn", pid, card)
 
 func _draw_card(pid: int) -> void:
-	var card := CardDeck.draw()
+	var card = CardDeck.draw()
 	rpc("_apply_draw", pid, card)
 
 @rpc("any_peer", "call_local")
@@ -139,10 +140,11 @@ func _apply_board_cleared(pid: int, seq: Array) -> void:
 	boards[pid] = []
 	emit_signal("board_cleared", pid, seq)
 
-func _resolve_board(pid: int) -> void:
+func _resolve_board(pid: int) -> bool:
 	var seq = boards[pid].duplicate()
-	match_cards(seq)
+	await match_cards(seq)
 	rpc("_apply_board_cleared", pid, seq)
+	return true
 
 @rpc("any_peer", "call_local")
 func _apply_match_ended(winner_pid: int) -> void:
@@ -179,6 +181,9 @@ func add_curse(pid: int, turns: int = 3) -> void:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+func _set_player_view(pv: Control):
+	self.pv = pv
 
 func _discard_last(pid: int) -> void:
 	if not hands[pid].is_empty():
@@ -238,5 +243,7 @@ func match_cards(seq: Array) -> void:
 		#"221": print("221")
 		#"222": print("222")
 		_:
-			request_draw()
+			var pid = await pv.player_picked
+			print("Player Picked", pid)
+			_draw_card(pid)
 			print("no match")
