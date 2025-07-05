@@ -101,7 +101,7 @@ func _ready() -> void:
 	client.lobby_joined.connect(_on_lobby_joined)
 	client.lobby_sealed.connect(_on_lobby_sealed)
 	client.peer_connected.connect(_on_peer_connected)
-	client.peer_disconnected.connect(_on_peer_disconected)
+	client.peer_disconnected.connect(_on_peer_disconnected)
 	client.offer_received.connect(_on_offer_received)
 	client.answer_received.connect(_on_answer_received)
 	client.candidate_received.connect(_on_candidate_received)
@@ -119,8 +119,6 @@ func _process(_delta):
 func _on_host_button_pressed() -> void:
 	LobbyInfo.text = "Hosting..."
 	client.host_lobby(PlayerName_getter.text)
-	rtc_mesh.create_server()
-	multiplayer.multiplayer_peer = rtc_mesh
 	to_lobbyScreen_mode()
 
 
@@ -129,8 +127,6 @@ func _on_join_button_pressed() -> void:
 	print("Joining...", id)
 	client.join_lobby(id, PlayerName_getter.text)
 	print(client.peer.peer_id)
-	#rtc_mesh.create_client(2)
-	#multiplayer.multiplayer_peer = rtc_mesh
 
 
 func _on_take_card_pressed() -> void:
@@ -242,7 +238,7 @@ func _add_self_to_list() -> void:
 
 
 func _player_list_has(name: String) -> bool:
-	for i in PlayerList.item_count:
+	for i in range(PlayerList.item_count):
 		if PlayerList.get_item_text(i) == name:
 			return true
 	return false
@@ -306,8 +302,11 @@ func _on_join_list_pressed() -> void:
 
 
 func _on_connected(pid: int):
-	rtc_mesh.create_client(pid)
+	if pid == 1:
+		rtc_mesh.create_server()
+	else:
+		rtc_mesh.create_client(pid)
 	multiplayer.multiplayer_peer = rtc_mesh
 	
-func _on_peer_disconected(pid: int):
+func _on_peer_disconnected(pid: int):
 	pass

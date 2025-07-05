@@ -11,8 +11,9 @@ const LABEL := {
 @export var pid: int
 @export var Hand: ItemList
 @export var Board: ItemList
-@export var Turn : RichTextLabel
-
+@export var Turn: RichTextLabel
+@export var Players: ItemList
+signal player_picked(pid: int)
 var is_local: bool
 var _gs: Node
 
@@ -26,6 +27,7 @@ func _ready() -> void:
 	if not is_local:
 		self.visible = false
 	Hand.item_selected.connect(_on_hand_click)
+	Players.item_selected.connect(_on_players_click)
 
 
 func init(gs: Node) -> void:
@@ -33,6 +35,7 @@ func init(gs: Node) -> void:
 	_connect_signals()
 	_refresh_hand()   
 	_refresh_board()
+	_refresh_players()
 	_on_turn_started(1, 30.0)
 
 
@@ -47,6 +50,7 @@ func _on_turn_started(turn_pid: int, time_left: float):
 		Turn.text = "Your Turn"
 	else:
 		Turn.text = "Turn of %d" % turn_pid
+	_refresh_hand()
 
 func _on_card_drawn(draw_pid: int, color: CardDeck.CardColor) -> void:
 	if draw_pid != pid:
@@ -61,6 +65,7 @@ func _on_card_played(play_pid: int, color: CardDeck.CardColor) -> void:
 				Hand.remove_item(i)
 				break
 	_refresh_board()
+	_refresh_players()
 
 
 func _refresh_board():
@@ -77,10 +82,21 @@ func _refresh_hand():
 	for c in _gs.hands[pid]:
 		Hand.add_item(card_label(c))
 
+func _refresh_players():
+	Players.clear()
+	for p in _gs.players:
+		var cur = _gs.curses.get(p, []).size()
+		var shields = _gs.shields.get(p, 0)
+		var hand = _gs.hands.get(p, []).size()
+		var text = "%s: Рука: %d Щиты: %d Проклятия: %s" % [(str(p) if p != pid else "You"), hand, shields, cur]
+		var idx = Players.add_item(text)
+		Players.set_item_metadata(idx, p)
+
 
 func _on_board_cleared(clr_pid: int, _seq: Array) -> void:
 	_refresh_board() 
 	_refresh_hand()
+	_refresh_players()
 
 
 func _on_hand_click(idx: int) -> void:
@@ -88,6 +104,8 @@ func _on_hand_click(idx: int) -> void:
 		return
 	_gs.request_play(idx, true)
 
+func _on_players_click(idx: int) -> void:
+	emit_signal("player_picked", Players.get_item_metadata(idx))
 
 func _on_clear_button_pressed() -> void:
 	_gs.request_play(-1, false)

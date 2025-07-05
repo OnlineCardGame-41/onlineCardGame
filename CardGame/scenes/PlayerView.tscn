@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
 
-[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn")]
+[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,10 +13,12 @@ script = ExtResource("1_vtsk7")
 Hand = NodePath("Hand")
 Board = NodePath("Board")
 Turn = NodePath("Turn")
+Players = NodePath("Players")
 
 [node name="Hand" type="ItemList" parent="."]
 layout_mode = 1
 anchors_preset = -1
+anchor_top = -0.00617284
 anchor_bottom = -0.00617284
 offset_top = 396.0
 offset_right = 320.0

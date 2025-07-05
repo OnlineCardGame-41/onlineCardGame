@@ -141,7 +141,6 @@ func _apply_board_cleared(pid: int, seq: Array) -> void:
 
 func _resolve_board(pid: int) -> void:
 	var seq = boards[pid].duplicate()
-	_apply_board_cleared(pid, seq)
 	match_cards(seq)
 	rpc("_apply_board_cleared", pid, seq)
 
@@ -174,7 +173,7 @@ func _apply_curse(pid: int, turns: int) -> void:
 	curses[pid].append(turns)
 	emit_signal("curse_added", pid, turns)
 
-func add_curse(pid: int, turns: int) -> void:
+func add_curse(pid: int, turns: int = 3) -> void:
 	rpc("_apply_curse", pid, turns)
 
 # ---------------------------------------------------------------------------
@@ -192,34 +191,52 @@ func _others_draw(except_pid: int) -> void:
 
 # 0 – R, 1 – Y, 2 – B
 func match_cards(seq: Array) -> void:
-	var key := "".join(seq)
+	var key = "".join(seq)
 	match key:
-		"000": print("000")
-		"001": print("001")
-		"002": print("002")
-		"010": print("010")
-		"011": print("011")
-		"012": print("012")
-		"020": print("020")
-		"021": print("021")
-		"022": print("022")
-		"100": print("100")
-		"101": print("101")
-		"102": print("102")
-		"110": print("110")
-		"111": print("111")
-		"112": print("112")
-		"120": print("120")
-		"121": print("121")
-		"122": print("122")
-		"200": print("200")
-		"201": print("201")
-		"202": print("202")
-		"210": print("210")
-		"211": print("211")
-		"212": print("212")
-		"220": print("220")
-		"221": print("221")
-		"222": print("222")
+		#"00": print("00")
+		#"01": print("01")
+		#"02": print("02")
+		#"10": print("10")
+		#"11": print("11")
+		#"12": print("12")
+		#"20": print("20")
+		#"21": print("21")
+		"22":
+			give_shield(multiplayer.get_unique_id()) 
+			print("22")
+		"000": 
+			_others_draw(-1)
+			print("000")
+		#"001": print("001")
+		#"002": print("002")
+		#"010": print("010")
+		#"011": print("011")
+		#"012": print("012")
+		#"020": print("020")
+		#"021": print("021")
+		#"022": print("022")
+		#"100": print("100")
+		#"101": print("101")
+		#"102": print("102")
+		#"110": print("110")
+		#"111": print("111")
+		#"112": print("112")
+		#"120": print("120")
+		#"121": print("121")
+		#"122": print("122")
+		#"200": print("200")
+		"201": 
+			for p in players:
+				add_curse(p)
+			give_shield(multiplayer.get_unique_id())
+			print("201")
+		#"202": print("202")
+		#"210": print("210")
+		#"211": print("211")
+		#"212": print("212")
+		#"220": print("220")
+		#"221": print("221")
+		#"222": print("222")
 		_:
+			request_draw()
 			print("no match")
