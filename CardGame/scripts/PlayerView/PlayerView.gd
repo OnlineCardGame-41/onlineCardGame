@@ -8,15 +8,18 @@ const LABEL := {
 	CardDeck.CardColor.BLUE: "Синяя",
 }
 
+signal player_picked(pid: int)
+
 @export var pid: int
 @export var Hand: ItemList
 @export var Board: ItemList
 @export var Turn: RichTextLabel
 @export var Players: ItemList
-signal player_picked(pid: int)
+@export var TimeLabel: RichTextLabel
+
 var is_local: bool
 var _gs: Node
-
+@onready var _timer: Timer = $"../../TurnTimer"
 
 func card_label(c: CardDeck.CardColor) -> String:
 	return LABEL[c]
@@ -29,6 +32,11 @@ func _ready() -> void:
 	Hand.item_selected.connect(_on_hand_click)
 	Players.item_selected.connect(_on_players_click)
 
+func _process(delta: float) -> void:
+	if not _timer.is_stopped():
+		TimeLabel.text = " %.1f сек" % _timer.time_left
+	else:
+		TimeLabel.text = ""         
 
 func init(gs: Node) -> void:
 	_gs = gs

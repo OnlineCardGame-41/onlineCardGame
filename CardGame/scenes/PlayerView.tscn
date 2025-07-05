@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
 
-[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players")]
+[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players", "TimeLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,7 @@ Hand = NodePath("Hand")
 Board = NodePath("Board")
 Turn = NodePath("Turn")
 Players = NodePath("Players")
+TimeLabel = NodePath("TimeLabel")
 
 [node name="Hand" type="ItemList" parent="."]
 layout_mode = 1
@@ -52,10 +53,9 @@ text = "Finish
 
 [node name="Turn" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 431.0
-offset_top = 48.0
-offset_right = 684.0
-offset_bottom = 88.0
+offset_left = 322.0
+offset_right = 575.0
+offset_bottom = 40.0
 
 [node name="Players" type="ItemList" parent="."]
 layout_mode = 0
@@ -63,6 +63,13 @@ offset_left = 759.0
 offset_top = 400.0
 offset_right = 1149.0
 offset_bottom = 520.0
+
+[node name="TimeLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -2.0
+offset_right = 319.0
+offset_bottom = 38.0
 
 [connection signal="item_clicked" from="Hand" to="." method="_on_hand_item_clicked"]
 [connection signal="pressed" from="ClearButton" to="." method="_on_clear_button_pressed"]

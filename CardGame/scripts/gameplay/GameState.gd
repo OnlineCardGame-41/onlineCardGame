@@ -10,7 +10,7 @@ signal match_ended(winner_pid: int)
 signal shield_changed(pid: int, count: int)
 signal curse_added(pid: int, turns: int)      # новое проклятье
 
-@export var turn_time := 30.0  # секунд на ход
+@export var turn_time := 5.0  # секунд на ход
 
 var players: PackedInt32Array
 var hands: Dictionary = {}

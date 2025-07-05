@@ -1,16 +1,14 @@
 extends Timer
-var current_pid := 0
+
 
 
 func _ready() -> void:
 	autostart = false
 	one_shot = true
-	wait_time = 30.0
 	connect("timeout", Callable(self, "_on_timeout"))
 
 
 func _on_timeout() -> void:
-	#var gs := get_parent()
-	#if gs.players[gs.active_idx] == gs.multiplayer.get_unique_id():
-	#gs.request_draw.rpc()
-	pass
+	var gs = $"../GameState"
+	if gs.multiplayer.is_server():
+		gs._begin_turn.rpc((gs.active_idx + 1) % gs.players.size())
