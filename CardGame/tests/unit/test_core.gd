@@ -71,9 +71,8 @@ func test_gamestate_server_board_cleared() -> void:
 	var gs = preload("res://scripts/gameplay/GameState.gd").new()
 	gs.players        = PackedInt32Array([1])
 	gs.boards[1]      = [0, 1, 2]
-
 	watch_signals(gs)
-	gs._server_board_cleared(1, gs.boards[1])
+	gs._apply_board_cleared(1, gs.boards[1])
 
 	assert_true(gs.boards[1].is_empty())
 	assert_signal_emit_count(gs, "board_cleared", 1)
