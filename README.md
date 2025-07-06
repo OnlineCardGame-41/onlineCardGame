@@ -6,7 +6,7 @@ The **MVP v2** is distributed as a self-contained Windows build produced by the 
 2. Download the artifact **`CardGame-windows`**.  
 3. Extract the ZIP archive to any local directory (no installation required).  
 4. Double-click `CardGame.exe`.  
-   The game will start and automatically connect to the public signalling server whose address is shipped in `CardGame/config/server.cfg`.
+   The game will start and automatically connect to the public signalling server 
 
 > _Advanced_: To build from source you need Go 1.24+, Godot 4.4, and the Godot export templates.  
 > Run `go run ./server/cmd` to launch the signalling server and `godot --export-release "Windows Desktop"` from the **CardGame** folder to rebuild the client.
@@ -21,8 +21,8 @@ The **MVP v2** is distributed as a self-contained Windows build produced by the 
 | **CardGame Client** | Game logic, rendering, WebRTC peer connection, UI | Godot 4.4 (GDScript) |
 | **WebRTC Data Channel** | Real-time, peer-to-peer game state replication | Built-in WebRTC |
 
-The client is logically split into *Transport*, *Game Core*, and *Presentation* layers.  
-The only runtime coupling between client and server is the JSON message contract used during session establishment; once the peers are connected the server is out of the data path.  
+The client is logically split into Gamestate, Multiplayer layers.  
+The only runtime coupling between client and server is the messages contract used during session establishment; once the peers are connected the server is out of the data path.  
 This loose coupling isolates gameplay code from backend concerns, keeps the server stateless, and allows us to evolve each side independently—critical for rapid prototyping and short release cycles.
 
 ### Dynamic view
@@ -39,12 +39,11 @@ This loose coupling isolates gameplay code from backend concerns, keeps the serv
 7. **Client Core** → **UI** – `onConnectionOpen()`
 
 *Measured performance*  
-Average time from button click to _RTCDataChannel open_ (20 production sessions, 04 Jul 2025):
+Average time from button click to open data channel:
 
 | Metric | Value |
 |--------|-------|
 | Mean | **3.0 s** |
-| P95 | **3.2 s** |
 | Tooling | `OS.get_ticks_msec()` logging on both peers |
 
 ### Deployment view
@@ -60,7 +59,7 @@ This design minimises hosting costs and latency and enables offline LAN play by 
 
 ## Development
 ### Kanban board
-Link: *(placeholder for board URL)*
+Link: *[Board](https://github.com/orgs/OnlineCardGame-41/projects/2)*
 
 | Column | Entry criteria |
 |--------|----------------|
@@ -71,23 +70,23 @@ Link: *(placeholder for board URL)*
 ### Git workflow
 ![Gitgraph](docs/development/gitgraph.png)
 
-* **Branching** – short-lived topic branches from `main`:  
-  `feature/123-short-slug`, `fix/456-bug-slug`.
-* **Commit messages** – [Conventional Commits](https://www.conventionalcommits.org) (e.g. `feat(core): add drag-and-drop for cards`).
-* **Issues & templates** – all work starts with an issue created from `feature_request.md` or `bug_report.md` (templates in `.github/ISSUE_TEMPLATE/`).
-* **Labels** – `bug`, `enhancement`, `tech-debt`, `prio:high`, `status:blocked`.
-* **Pull requests** – one issue ↔ one PR, must reference the issue (`Fixes #123`) and use `pull_request_template.md`.
-* **Reviews & merging** – at least one approving review + green CI; squash-merge to keep history linear.
-* **Branch protection** – `main` is protected against direct pushes; administrators run emergency hotfixes via `hotfix/*` branches that follow the same PR procedure.
+Defining rules not yet used:
+   * **Branching** – short-lived topic branches from `main`:  
+     `feature/123-short-slug`, `fix/456-bug-slug`.
+   * **Commit messages** – .
+   * **Issues & templates** – all work starts with an issue created from `feature_request.md` or `bug_report.md` (templates in `.github/ISSUE_TEMPLATE/`).
+   * **Labels** – `bug`, `enhancement`.
+   * **Pull requests** – one issue ↔ one PR, must reference the issue (`Fixes #123`) and use `pull_request_template.md`.
+   * **Reviews & merging** – at least one approving review + green CI; squash-merge to keep history linear.
+   * **Branch protection** – `main` is protected against direct pushes; administrators run emergency hotfixes via `hotfix/*` branches that follow the same PR procedure.
 
 ### Secrets management
 No secrets are committed.  
-The only environment-specific value—**`SIGNALLING_SERVER_URL`**—is currently shipped in `CardGame/config/server.cfg`.  
+The only environment-specific value—**`SIGNALLING_SERVER_URL`**—is currently hardcoded.  
 Roadmap:
 
 1. Move the address to an `.env` file read by Godot at runtime.  
-2. Store the value as a **GitHub Secret** (`SIGNALLING_SERVER_URL`) and inject it into CI for automated exports.  
-3. Rotate the secret quarterly and on every staff departure.
+2. Store the value as a **GitHub Secret** (`SIGNALLING_SERVER_URL`) and inject it into CI for automated exports. 
 
 ## Quality assurance
 ### Automated tests
@@ -102,25 +101,21 @@ Static analysis:
 * **go vet / staticcheck** – code analysis for Go (`Server/server`).  
 
 ### Quality attribute scenarios
-Link: *(placeholder for QAS document)*
+Link: *[QAS](docs/quality-assurance/quality-attribute-scenarios.md)*
 
 ## Build and deployment
 ### Continuous Integration
-Workflow file: `.github/workflows/main.yml`
+[Workflow file](.github/workflows/main.yml)
 
 | Category | Tool | Purpose |
 |----------|------|---------|
-| **Static analysis** | `go vet`, `staticcheck`, `gdformat --check`, `gdlint` | Enforce code quality and style |
-| **Testing** | `go test`, **GUT** | Run all unit & integration tests, produce coverage & JUnit XML |
+| **Static analysis** | `go vet`, `gdformat --check`, `gdlint` | Enforce code quality and style |
+| **Testing** | `go test`, **GUT** | Run all unit & integration tests|
 | **Packaging** | Godot exporter | Produce Windows artefact `CardGame-windows` |
 
-All runs are visible in **GitHub Actions → CI+CD** *(placeholder link)*.
+All runs are visible in **GitHub Actions → CI+CD** *[CI+CD](https://github.com/OnlineCardGame-41/onlineCardGame/actions/workflows/main.yml)*.
 
 ### Continuous Deployment
-The same workflow publishes the Windows build as an artefact.  
-Future milestones include:
+The same workflow publishes the Windows build as an artefact.
 
-* Nightly Docker image for the signalling server pushed to GHCR.  
-* Signed MSI installer generated via WiX and attached to the release page.
-
-Runs are tracked in the **Actions** tab *(placeholder link)*.
+Runs are tracked in the **Actions** tab *[Actions](https://github.com/OnlineCardGame-41/onlineCardGame/actions)*.
