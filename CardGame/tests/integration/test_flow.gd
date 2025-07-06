@@ -118,3 +118,111 @@ func test_gamestate_victory() -> void:
 
 	assert_signal_emit_count(gs, "match_ended", 1)
 	assert_eq(get_signal_parameters(gs, "match_ended"), [7])
+	
+var signal_emitted := false
+
+func _on_card_drawn_signal(pid, card):
+	signal_emitted = true
+	assert_eq(pid, 1)
+	assert_eq(card, CardDeck.CardColor.RED)
+
+func test_apply_draw_adds_card_and_emits_signal() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+	
+	gs.players = PackedInt32Array([1])
+	gs.hands = {1: []}
+	
+	signal_emitted = false
+	gs.connect("card_drawn", Callable(self, "_on_card_drawn_signal"))
+	
+	gs._apply_draw(1, CardDeck.CardColor.RED)
+	
+	assert_true(signal_emitted)
+	assert_eq(gs.hands[1], [CardDeck.CardColor.RED])
+
+var shield_changed_emitted := false
+
+func _on_shield_changed_signal(pid, count):
+	shield_changed_emitted = true
+	assert_eq(pid, 2)
+	assert_eq(count, 3)
+
+func test_apply_shield_adds_and_emits() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+
+	gs.shields = {}
+
+	shield_changed_emitted = false
+	gs.connect("shield_changed", Callable(self, "_on_shield_changed_signal"))
+
+	gs._apply_shield(2, 3)
+
+	assert_true(shield_changed_emitted)
+	assert_eq(gs.shields[2], 3)
+
+var curse_added_emitted := false
+
+func _on_curse_added_signal(pid, turns):
+	curse_added_emitted = true
+	assert_eq(pid, 5)
+	assert_eq(turns, 4)
+
+func test_apply_curse_adds_and_emits() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+
+	gs.curses = {}
+
+	curse_added_emitted = false
+	gs.connect("curse_added", Callable(self, "_on_curse_added_signal"))
+
+	gs._apply_curse(5, 4)
+
+	assert_true(curse_added_emitted)
+	assert_eq(gs.curses[5], [4])
+
+var match_ended_emitted := false
+
+func _on_match_ended_signal(winner_pid):
+	match_ended_emitted = true
+	assert_eq(winner_pid, 9)
+
+func test_check_victory_emits_match_ended() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+
+	gs.hands = {9: []}
+	gs.boards = {9: []}
+
+	match_ended_emitted = false
+	gs.connect("match_ended", Callable(self, "_on_match_ended_signal"))
+
+	gs._check_victory(9)
+
+	assert_true(match_ended_emitted)
+
+var card_played_emitted := false
+
+func _on_card_played_signal(pid, card):
+	card_played_emitted = true
+	assert_eq(pid, 3)
+	assert_eq(card, CardDeck.CardColor.RED)
+
+func test_apply_card_played_removes_card_from_hand_and_emits() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+
+	gs.players = PackedInt32Array([3])
+	gs.hands = {3: [CardDeck.CardColor.RED, CardDeck.CardColor.BLUE]}
+	gs.boards = {3: []}
+
+	card_played_emitted = false
+	gs.connect("card_played", Callable(self, "_on_card_played_signal"))
+
+	gs._apply_card_played(3, CardDeck.CardColor.RED)
+
+	assert_true(card_played_emitted)
+	assert_eq(gs.hands[3], [CardDeck.CardColor.BLUE])
+	assert_eq(gs.boards[3], [CardDeck.CardColor.RED])
