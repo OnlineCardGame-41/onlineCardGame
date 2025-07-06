@@ -20,7 +20,7 @@ void fragment() {
     uv.x /= aspect;              // undo the squashing for later math
 
     /* --- Dynamic warping --- */
-    float t = TIME;
+    float t = TIME * 0.05;
     for (int i = 1; i <= 9; i++) {
         float fi   = float(i);
         float s    = 0.3 / fi;
