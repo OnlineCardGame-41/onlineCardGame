@@ -17,9 +17,14 @@ extends Node2D
 @export var Game: Node2D
 @export var game_scene: PackedScene = preload("res://scenes/Game.tscn")
 
-var client: SignalWsClient
+var peer_connections = {}  # pid -> WebRTCPeerConnection
+var peer_names = {}  
 
-@onready var rtc_mesh := WebRTCMultiplayerPeer.new()
+@onready var client = SignalWsClient.new()
+@onready var rtc_mesh = WebRTCMultiplayerPeer.new()
+
+
+
 var ice_servers := [
 	{"urls": "stun:stun.l.google.com:19302"},  #Stun and Turn server adresses and credentials
 	{"urls": "stun:stun1.l.google.com:3478"},
@@ -92,23 +97,26 @@ func _ready() -> void:
 	HostButton.disabled = true
 	JoinMode.disabled = true
 
-	client = SignalWsClient.new()
-
-	rtc_mesh = WebRTCMultiplayerPeer.new()
-
 	client.connected.connect(_on_connected)
 	client.lobby_hosted.connect(_on_lobby_hosted)
 	client.lobby_joined.connect(_on_lobby_joined)
 	client.lobby_sealed.connect(_on_lobby_sealed)
 	client.peer_connected.connect(_on_peer_connected)
 	client.peer_disconnected.connect(_on_peer_disconnected)
-	client.offer_received.connect(_on_offer_received)
+	
 	client.answer_received.connect(_on_answer_received)
+	client.offer_received.connect(_on_offer_received)
+	
 	client.candidate_received.connect(_on_candidate_received)
 	client.new_lobby_received.connect(_on_new_lobby_received)
+	
 	client.we_joined.connect(_on_we_joined)
 	client.connect_to_server(websocket_url)
-
+	multiplayer.peer_connected.connect(_on_multiplayer_peer_connected)
+	self.tree_exiting.connect(
+		func():
+			client.seal_lobby()
+	)
 
 func _process(_delta):
 	if client != null:
@@ -168,6 +176,8 @@ func _on_lobby_joined(pid: int, lobby_id: int, sealed: bool) -> void:
 func _spawn_pc(pid: int, polite: bool) -> WebRTCPeerConnection:
 	var pc := WebRTCPeerConnection.new()
 	pc.initialize({"iceServers": ice_servers})
+
+	peer_connections[pid] = pc
 
 	pc.session_description_created.connect(
 		func(type: String, sdp: String):
@@ -260,6 +270,9 @@ func test_ping():
 
 @rpc("authority", "call_local")
 func game_start():
+	
+	client.seal_lobby()
+	
 	var gm = game_scene.instantiate()
 	get_parent().add_child(gm)
 	self.visible = false
@@ -270,10 +283,23 @@ func game_start():
 		gs.start_match.rpc(peer_ids)
 
 
-@rpc("any_peer")
+@rpc("any_peer")  # Remove "call_local"
 func _rpc_add_player(name: String) -> void:
-	if PlayerList.find_item(name) == -1:
-		PlayerList.add_item(name)
+	var sender_id = multiplayer.get_remote_sender_id()
+	print("Received name: ", name, " from sender: ", sender_id)
+
+	# Only add if it's from a remote peer (not yourself)
+	if sender_id != 0:
+		var item_exists = false
+		for i in PlayerList.get_item_count():
+			if PlayerList.get_item_text(i) == name:
+				item_exists = true
+				break
+
+		if not item_exists:
+			PlayerList.add_item(name)
+			peer_names[sender_id] = name
+			print("Added player: ", name)
 
 
 func _on_joinMode_pressed() -> void:
@@ -310,3 +336,10 @@ func _on_connected(pid: int):
 	
 func _on_peer_disconnected(pid: int):
 	pass
+
+func _on_multiplayer_peer_connected(pid: int):
+	print("Multiplayer peer connected: ", pid, " - RPC ready")
+	var name = PlayerName_getter.text.strip_edges()
+	if name == "":
+		name = "Guest"
+	rpc_id(pid, "_rpc_add_player", name)

@@ -1,7 +1,7 @@
 class_name CardDeck
 enum CardColor { RED, YELLOW, BLUE }
 
-static var _rng := RandomNumberGenerator.new()
+static var _rng = RandomNumberGenerator.new()
 
 
 static func draw() -> CardColor:

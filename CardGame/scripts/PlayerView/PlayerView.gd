@@ -2,7 +2,7 @@ class_name PlayerView
 extends Control
 
 
-const LABEL := {
+const LABEL = {
 	CardDeck.CardColor.RED: "Красная",
 	CardDeck.CardColor.YELLOW: "Жёлтая",
 	CardDeck.CardColor.BLUE: "Синяя",
@@ -102,7 +102,7 @@ func _refresh_players():
 
 
 func _on_board_cleared(clr_pid: int, _seq: Array) -> void:
-	_refresh_board() 
+	_refresh_board()
 	_refresh_hand()
 	_refresh_players()
 
