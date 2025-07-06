@@ -1,0 +1,102 @@
+name: "Task"
+description: "Create a task."
+title: "[Task]: "
+labels: ["Meta: Unknown Priority"]
+projects: ["inno-swp-2025/2"]
+type: "Task"
+body:
+  - type: textarea
+    id: about-tasks
+    attributes:
+      label: "<!-- About tasks -->"
+      description: |
+        Don't modify the default text in this input field.
+        Follow the instructions in the comment.
+      value: |
+        <!--
+        This form is for creating a specific, actionable task.
+        Tasks should be small enough to be completed by one person in a short amount of time.
+        -->
+    validations:
+      required: false
+
+  - type: textarea
+    id: task-description-and-context
+    attributes:
+      label: "<h2> Task Description & Context </h2>"
+      description: |
+        Keep the comment.
+        Follow the instructions in the comment.
+        Write your text in this input field after the comment.
+      value: |
+        <!--
+        Briefly describe what needs to be done and why.
+
+        Example:
+
+        Create the backend API endpoint for liking a video.
+        The endpoint will handle authentication, database updates, and return the correct response codes.
+        -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: "<h2> Subtasks </h2>"
+      description: |
+        Keep the comment.
+        Follow the instructions in the comment.
+        Write your text in this input field after the comment.
+      value: |
+        <!--
+        Break down the task into a checklist of specific, actionable subtasks.
+        This is your "how-to" guide for meeting the Task Acceptance Criteria.
+
+        Example:
+
+        - [ ] Create the POST /api/v1/video/{id}/like route and its controller function.
+        - [ ] Implement the LikeService logic to handle successful like/unlike operations, 404 (video not found), and 409 (already liked) responses.
+        - [ ] Apply JWT authentication middleware to the new like route to ensure it's protected.
+        - [ ] Write unit tests for LikeService covering all scenarios.
+        - [ ] Document the new endpoint in the OpenAPI/Swagger spec.
+        -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: task-acceptance-criteria
+    attributes:
+      label: "<h2> Task Acceptance Criteria </h2>"
+      description: |
+        Keep the comment.
+        Follow the instructions in the comment.
+        Write your text in this input field after the comment.
+      value: |
+        <!--
+        List specific and verifiable outcomes.
+        This is what will be checked during review.
+
+        Example:
+
+        - [ ] A `POST` route is created at `/api/v1/video/{id}/like`.
+        - [ ] The route is protected and requires a valid JWT.
+        - [ ] A successful request returns a `200 OK` status.
+        - [ ] A request for a video the user has already liked returns a `409 Conflict`.
+        - [ ] A request with a non-existent `video_id` returns a `404 Not Found`.
+        - [ ] Unit tests for the `LikeService` are written and pass with >90% coverage.
+        - [ ] The new endpoint is documented in the OpenAPI/Swagger spec.
+        -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: sub-issues
+    attributes:
+      label: "<h2> Sub-issues </h2>"
+      description: |
+        Don't modify the default text in this input field.
+      value: |
+        Sub-issues are blockers for this task.
+    validations:
+      required: false
