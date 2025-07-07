@@ -76,3 +76,88 @@ func test_gamestate_server_board_cleared() -> void:
 
 	assert_true(gs.boards[1].is_empty())
 	assert_signal_emit_count(gs, "board_cleared", 1)
+	
+func test_gamestate_curses_processing_direct() -> void:
+	# 1) Подготовка partial_double GameState
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = partial_double(GS).new()
+	# 2) Добавляем в сцену, чтобы is_inside_tree() == true
+	get_tree().get_root().add_child(gs)
+	# 3) Инициализируем players и curses
+	gs.players = PackedInt32Array([1, 2])
+	gs.curses  = { 1: [3, 1], 2: [] }
+	# 4) Стабим только _draw_card
+	stub(gs, "_draw_card")
+	# 5) Вызываем обработку проклятий напрямую
+	gs._process_curses(1)
+	# 6) Проверяем:
+	#    — два активных проклятия → два вызова _draw_card
+	assert_call_count(gs, "_draw_card", 2)
+	#    — новое состояние curses[1] == [2]
+	assert_eq(gs.curses[1], [2], "Curses should decrement turns")
+
+#_apply_draw добавляет карту в руку и эмитит card_drawn
+func test_apply_draw_emits_and_appends() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+	watch_signals(gs)
+
+	# Рука изначально пуста
+	gs.hands = { 5: [] }
+	gs._apply_draw(5, CardDeck.CardColor.RED)
+
+	# Проверили добавление в словарь
+	assert_eq(gs.hands[5], [CardDeck.CardColor.RED])
+	# Проверили сигнал
+	assert_signal_emit_count(gs, "card_drawn", 1)
+	var params = get_signal_parameters(gs, "card_drawn")
+	assert_eq(params, [5, CardDeck.CardColor.RED])
+
+func test_apply_curse_appends_and_emits_signal() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+	watch_signals(gs)
+
+	# Убедимся, что для игрока ещё нет проклятий
+	assert_false(gs.curses.has(42))
+	
+	# Вызываем _apply_curse напрямую
+	gs._apply_curse(42, 4)
+
+	# Проверяем: curses[42] теперь содержит одно значение — 4
+	assert_eq(gs.curses[42], [4], "Curses for player 42 should contain [4]")
+
+	# Проверяем, что сигнал был сэмитчен
+	assert_signal_emit_count(gs, "curse_added", 1)
+	var params = get_signal_parameters(gs, "curse_added")
+	assert_eq(params, [42, 4])
+
+func test_discard_last_removes_last_card() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+
+	# Рука игрока: три карты
+	gs.hands[7] = [CardDeck.CardColor.RED, CardDeck.CardColor.YELLOW, CardDeck.CardColor.BLUE]
+
+	# Удаляем последнюю
+	gs._discard_last(7)
+
+	# Проверяем, что остались только две первые
+	assert_eq(gs.hands[7], [CardDeck.CardColor.RED, CardDeck.CardColor.YELLOW])
+
+func test_check_victory_triggers_match_end_if_empty() -> void:
+	var GS = preload("res://scripts/gameplay/GameState.gd")
+	var gs = GS.new()
+	watch_signals(gs)
+
+	# Игрок 9 — победитель: у него пустые рука и доска
+	gs.hands[9]  = []
+	gs.boards[9] = []
+
+	# Вызываем проверку победы
+	gs._check_victory(9)
+
+	# Проверяем, что сработал сигнал окончания матча
+	assert_signal_emit_count(gs, "match_ended", 1)
+	var params = get_signal_parameters(gs, "match_ended")
+	assert_eq(params, [9])
