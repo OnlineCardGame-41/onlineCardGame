@@ -1,0 +1,40 @@
+@startuml
+title Deployment – Online Card-Game Lobby (Godot + WebRTC)
+
+/'──────────  Clients  ──────────'/
+actor Player
+node "Player Device\nDesktop (Windows / macOS / Linux)" as ClientA {
+  artifact "Game Client\n(Godot Engine + WebRTC)" as GameA
+}
+node "Player Device\nDesktop (Windows / macOS / Linux)" as ClientB {
+  artifact "Game Client\n(Godot Engine + WebRTC)" as GameB
+}
+Player -down-> ClientA
+Player -down-> ClientB
+
+/'──────────  Backend  ──────────'/
+cloud "Render.com" {
+  node "Signaling / Lobby Server\n(Docker container)" as SigSrv
+}
+
+/'──────────  External services  ──────────'/
+cloud "Public STUN / TURN\n(e.g., stun.l.google.com,\nopenrelay.metered.ca)" as StunTurn
+
+/'──────────  Connections  ──────────'/
+GameA --> SigSrv : WebSocket (WSS)\nJOIN_LOBBY, OFFER, ICE
+GameB --> SigSrv : WebSocket (WSS)\nJOIN_LOBBY, ANSWER, ICE
+
+GameA ..> StunTurn : STUN / TURN\nfor NAT traversal
+GameB ..> StunTurn : STUN / TURN\nfor NAT traversal
+
+GameA <..> GameB : WebRTC P2P data/media\n(UDP / DTLS-SRTP)
+
+/'──────────  Planned Expansion  ──────────'/
+frame "Future: Android Build" {
+  node "Android Device\n(Godot export)" as AndroidClient
+  AndroidClient ..> SigSrv : same signaling
+  AndroidClient ..> StunTurn : STUN / TURN
+  AndroidClient <..> GameA : WebRTC P2P
+}
+
+@enduml

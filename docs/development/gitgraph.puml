@@ -1,0 +1,20 @@
+!theme spacelab
+!pragma svgLinkTarget _blank        ' directives go OUTSIDE the @startgit
+
+@startgit
+* 9e9e9e9 (HEAD -> main, origin/main) chore(release): cut v1.1.0
+* 4d4d4d4 docs: update CHANGELOG
+*   Merge pull request #910 from hotfix/001-critical-fix
+|\  
+| * 2a2a2a2 (hotfix/001-critical-fix) hotfix: patch CVE-XYZ label:bug
+|/
+*   1f1f1f1 Merge pull request #456 from fix/456-bug-slug
+|\  
+| * c6c6c6c (fix/456-bug-slug) fix(reconnect): handle lost connection label:bug
+|/
+*   0d0d0d0 Merge pull request #123 from feature/123-short-slug
+|\  
+| * b9b9b9b (feature/123-short-slug) feat(bg): add prettier background shader label:enhancement
+|/
+* a1a1a1a initial commit
+@endgit
