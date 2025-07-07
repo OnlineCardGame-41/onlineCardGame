@@ -1,6 +1,9 @@
 extends GutTest
 
 
+var gs
+var pv
+
 # ─────────────────────────────────────────────
 #  before_each: делаем draw() детерминированным
 func before_each() -> void:
@@ -10,6 +13,16 @@ func before_each() -> void:
 	# Если это обычный скрипт, укажите путь:
 	var deck = preload("res://scripts/gameplay/CardDeck.gd")     # поправьте путь при необходимости
 	stub(deck, "draw").to_return(deck.CardColor.RED)
+	# Instantiate GameState and PlayerView
+	gs = GameState.new()
+	pv = PlayerView.new()
+	pv.pid = 1
+	# Add to scene tree for signal propagation
+	get_tree().get_root().add_child(gs)
+	get_tree().get_root().add_child(pv)
+	# Initialize PlayerView with GameState
+	pv.init(gs)
+	gs.pv = pv
 
 
 # ─────────────────────────────────────────────
@@ -118,3 +131,63 @@ func test_gamestate_victory() -> void:
 
 	assert_signal_emit_count(gs, "match_ended", 1)
 	assert_eq(get_signal_parameters(gs, "match_ended"), [7])
+
+
+
+func test_integration_card_drawn_updates_playerview_hand():
+	# Simulate drawing for local pid
+	gs._apply_draw(1, CardDeck.CardColor.YELLOW)
+	# Hand UI should update
+	assert_eq(pv.Hand.item_count, 1)
+	assert_eq(pv.Hand.get_item_text(0), pv.card_label(CardDeck.CardColor.YELLOW))
+
+func test_integration_card_played_updates_ui():
+	# Prepare a card in hand
+	gs.hands[1] = [CardDeck.CardColor.RED]
+	pv._refresh_hand()
+	# Emit play signal
+	gs._apply_card_played(1, CardDeck.CardColor.RED)
+	# UI Hand emptied, Board updated
+	assert_eq(pv.Hand.item_count, 0)
+	assert_true(pv.Board.get_item_text(0).ends_with("Красная"))
+
+func test_integration_turn_started_updates_turn_label():
+	# Other player's turn
+	gs.emit_signal("turn_started", 2, 15.0)
+	assert_eq(pv.Turn.text, "Turn of 2")
+	# Local player's turn
+	gs.emit_signal("turn_started", 1, 15.0)
+	assert_eq(pv.Turn.text, "Your Turn")
+
+func test_integration_player_click_emits_signal():
+	# Setup multiple players
+	gs.players = [1, 2]
+	gs.shields = {1:0, 2:0}
+	gs.curses = {1:[], 2:[]}
+	gs.hands = {1:[], 2:[]}
+	pv._refresh_players()
+	var picked = null
+	pv.connect("player_picked", self, "_on_player_picked_int", [picked])
+	# Simulate click on second item (player 2)
+	pv._on_players_click(1)
+	assert_eq(picked, 2)
+
+func _on_player_picked_int(pid, picked):
+	picked = pid
+
+func test_integration_refresh_players_shows_correct_metadata():
+	# Ensure display metadata matches GameState
+	gs.players = [1, 3]
+	gs.shields = {1:1, 3:2}
+	gs.curses = {1:[1], 3:[]}
+	gs.hands = {1:[0,1], 3:[2]}
+	pv._refresh_players()
+	# Check text and metadata
+	var txt0 = pv.Players.get_item_text(0)
+	var meta0 = pv.Players.get_item_metadata(0)
+	assert_true(txt0.find("Рука: 2") != -1 and txt0.find("Щиты: 1") != -1)
+	assert_eq(meta0, 1)
+	var txt1 = pv.Players.get_item_text(1)
+	var meta1 = pv.Players.get_item_metadata(1)
+	assert_true(txt1.find("Рука: 1") != -1 and txt1.find("Щиты: 2") != -1)
+	assert_eq(meta1, 3)

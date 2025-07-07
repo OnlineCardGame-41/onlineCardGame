@@ -1,0 +1,51 @@
+@startuml
+title WebRTC — Join Lobby & Call Setup
+
+actor      "Client A\n(Caller)"   as A
+actor      "Client B\n(Callee)"   as B
+participant "Lobby /\nSignalling Server"  as S
+database    STUN_TURN as R
+
+== 1. Join lobby ==
+A -> S: JOIN_LOBBY(roomId)
+S --> A: LOBBY_STATE(users, roomId)
+S --> B: USER_JOINED(A)
+
+== 2. Create PeerConnection (Caller side) ==
+A -> A: pcA = new RTCPeerConnection()
+A -> A: addLocalMediaTracks()
+
+== 3. Offer/Answer exchange ==
+A -> A: offer = pcA.createOffer()
+A -> pcA: setLocalDescription(offer)
+A -> S: SEND_OFFER(offer, to=B)
+S --> B: RELAY_OFFER(offer, from=A)
+
+B -> B: pcB = new RTCPeerConnection()
+B -> B: addLocalMediaTracks()
+B -> pcB: setRemoteDescription(offer)
+B -> B: answer = pcB.createAnswer()
+B -> pcB: setLocalDescription(answer)
+B -> S: SEND_ANSWER(answer, to=A)
+S --> A: RELAY_ANSWER(answer, from=B)
+A -> pcA: setRemoteDescription(answer)
+
+== 4. ICE Candidate exchange ==
+loop for each candidate
+    A -> S: ICE_CANDIDATE(candA, to=B)
+    S --> B: RELAY_CANDIDATE(candA, from=A)
+
+    B -> S: ICE_CANDIDATE(candB, to=A)
+    S --> A: RELAY_CANDIDATE(candB, from=B)
+end
+
+== 5. Connectivity checks ==
+A -> R: STUN / TURN allocation
+B -> R: STUN / TURN allocation
+A <--> B: DTLS‐SRTP media flow
+
+== 6. Ready ==
+A --> S: READY
+B --> S: READY
+note over A,B: Peers are now connected\nand exchanging audio/video data
+@enduml
