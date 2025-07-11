@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c3tmw2jmxd4mr"]
+
+[ext_resource type="Shader" uid="uid://c2hof0cj54r32" path="res://shaders/best.gdshader" id="1_bqkvs"]
+
+[resource]
+shader = ExtResource("1_bqkvs")
+shader_parameter/color_a = Color(0.54902, 0, 0.027451, 1)
+shader_parameter/color_b = Color(0.176471, 0.423529, 0.52549, 1)
+shader_parameter/color_c = Color(1, 0.937255, 0.6, 1)
+shader_parameter/scale = 2.0
+shader_parameter/time_speed = 0.1
+shader_parameter/blend = 0.1
+shader_parameter/frequency = 3.0
+shader_parameter/amplitude = 3.333
+shader_parameter/x_offset = 0.0
+shader_parameter/square_count = 100.0
