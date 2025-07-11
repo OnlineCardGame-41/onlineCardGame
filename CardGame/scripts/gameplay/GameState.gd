@@ -117,6 +117,12 @@ func _apply_draw(pid: int, card: CardDeck.CardColor) -> void:
 	emit_signal("card_drawn", pid, card)
 
 func _draw_card(pid: int) -> void:
+	var current = shields.get(pid, 0)
+	if current > 0:
+		shields[pid] = current - 1
+		emit_signal("shield_changed", pid, shields[pid])
+		print("Shield blocked draw for player", pid)
+		return
 	var card = CardDeck.draw()
 	rpc("_apply_draw", pid, card)
 
@@ -241,7 +247,9 @@ func match_cards(seq: Array) -> void:
 		#"212": print("212")
 		#"220": print("220")
 		#"221": print("221")
-		#"222": print("222")
+		"222":
+			give_shield(multiplayer.get_unique_id(), 2) 
+			print("222")
 		_:
 			var pid = await pv.player_picked
 			print("Player Picked", pid)
