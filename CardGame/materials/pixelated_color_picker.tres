@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bu4bu5nd16jiq"]
+
+[ext_resource type="Shader" path="res://shaders/pixelated_color_picker.gdshader" id="1_abrci"]
+
+[resource]
+shader = ExtResource("1_abrci")

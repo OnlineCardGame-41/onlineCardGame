@@ -16,9 +16,11 @@ signal player_picked(pid: int)
 @export var Turn: RichTextLabel
 @export var Players: ItemList
 @export var TimeLabel: RichTextLabel
+@export var BG: ColorRect
 
 var is_local: bool
 var _gs: Node
+var split: float = 0.5
 @onready var _timer: Timer = $"../../TurnTimer"
 
 func card_label(c: CardDeck.CardColor) -> String:
@@ -36,7 +38,8 @@ func _process(delta: float) -> void:
 	if not _timer.is_stopped():
 		TimeLabel.text = " %.1f сек" % _timer.time_left
 	else:
-		TimeLabel.text = ""         
+		TimeLabel.text = ""      
+	BG.set_instance_shader_parameter("split", delta)
 
 func init(gs: Node) -> void:
 	_gs = gs

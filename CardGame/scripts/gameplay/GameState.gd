@@ -84,10 +84,14 @@ func request_draw() -> void:
 		return
 	_draw_card(players[active_idx])
 
+var wait = false
 func request_play(card_idx: int, to_board: bool) -> void:
 	var pid = multiplayer.get_unique_id()
 	if pid != players[active_idx]:
 		return
+	if wait:
+		return
+	wait = true
 	if to_board:
 		var card = hands[pid][card_idx]
 		_play_card(pid, card)
@@ -95,6 +99,7 @@ func request_play(card_idx: int, to_board: bool) -> void:
 		await _resolve_board(pid)
 
 	_check_victory(pid)
+	wait = false
 	_begin_turn.rpc((active_idx + 1) % players.size())
 	
 
@@ -117,6 +122,12 @@ func _apply_draw(pid: int, card: CardDeck.CardColor) -> void:
 	emit_signal("card_drawn", pid, card)
 
 func _draw_card(pid: int) -> void:
+	var current = shields.get(pid, 0)
+	if current > 0:
+		shields[pid] = current - 1
+		emit_signal("shield_changed", pid, shields[pid])
+		print("Shield blocked draw for player", pid)
+		return
 	var card = CardDeck.draw()
 	rpc("_apply_draw", pid, card)
 
@@ -241,9 +252,13 @@ func match_cards(seq: Array) -> void:
 		#"212": print("212")
 		#"220": print("220")
 		#"221": print("221")
-		#"222": print("222")
+		"222":
+			give_shield(multiplayer.get_unique_id(), 2) 
+			print("222")
 		_:
 			var pid = await pv.player_picked
+			if not pid:
+				return
 			print("Player Picked", pid)
 			_draw_card(pid)
 			print("no match")

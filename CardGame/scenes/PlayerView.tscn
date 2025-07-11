@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://dj5evghtr02im"]
 
 [ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
-[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://pixelated.tres" id="2_88nkq"]
+[ext_resource type="Material" uid="uid://c3tmw2jmxd4mr" path="res://materials/best.tres" id="2_88nkq"]
 
-[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players", "TimeLabel")]
+[node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players", "TimeLabel", "BG")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,8 +18,9 @@ Board = NodePath("Board")
 Turn = NodePath("Turn")
 Players = NodePath("Players")
 TimeLabel = NodePath("TimeLabel")
+BG = NodePath("Background")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 material = ExtResource("2_88nkq")
 layout_mode = 0
 offset_left = -1.0
