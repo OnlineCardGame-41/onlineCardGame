@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3nppurbf4o52"
-path="res://.godot/imported/player.png-2dd0af52de4b213777cd8c9df94c0978.ctex"
+uid="uid://bty4ganeqfdu6"
+path="res://.godot/imported/blue_card_final.png-03637636c185aa359ebb55291ba0a01d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://player.png"
-dest_files=["res://.godot/imported/player.png-2dd0af52de4b213777cd8c9df94c0978.ctex"]
+source_file="res://src/blue_card_final.png"
+dest_files=["res://.godot/imported/blue_card_final.png-03637636c185aa359ebb55291ba0a01d.ctex"]
 
 [params]
 

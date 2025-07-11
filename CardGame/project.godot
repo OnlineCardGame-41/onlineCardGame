@@ -13,7 +13,7 @@ config_version=5
 config/name="CardGame"
 run/main_scene="uid://b758wfkg6h3ht"
 config/features=PackedStringArray("4.4", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://src/icon.png"
 
 [display]
 
@@ -24,6 +24,11 @@ window/vsync/vsync_mode=0
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gdLinter/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/webrtc_native/plugin.cfg")
+
+[layer_names]
+
+2d_physics/layer_1="card_target"
+2d_physics/layer_2="card_drop_area"
 
 [rendering]
 

@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://nfu2vpuoc0mj"]
+
+[ext_resource type="Texture2D" uid="uid://bty4ganeqfdu6" path="res://src/blue_card_final.png" id="1_5x102"]
+[ext_resource type="Script" uid="uid://uk0mn6egkj8g" path="res://scripts/gameplay/card_ui.gd" id="1_e1hm3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e1hm3"]
+size = Vector2(71, 95)
+
+[node name="CardUI" type="Control"]
+texture_filter = 1
+custom_minimum_size = Vector2(71, 95)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1081.0
+offset_bottom = -552.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e1hm3")
+
+[node name="CardSprite" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_5x102")
+
+[node name="DroppointDetector" type="Area2D" parent="."]
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DroppointDetector"]
+position = Vector2(35.5, 47.5)
+shape = SubResource("RectangleShape2D_e1hm3")

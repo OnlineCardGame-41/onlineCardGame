@@ -1,15 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://dj5evghtr02im"]
+[gd_scene load_steps=6 format=3 uid="uid://dj5evghtr02im"]
 
 [ext_resource type="Script" uid="uid://crkntlqiwwoi" path="res://scripts/PlayerView/PlayerView.gd" id="1_vtsk7"]
 [ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://pixelated.tres" id="2_88nkq"]
+[ext_resource type="Texture2D" uid="uid://bwcqdjnpbcptt" path="res://src/game_table_no_bg.png" id="3_6n86l"]
+[ext_resource type="PackedScene" uid="uid://nfu2vpuoc0mj" path="res://scenes/card_ui.tscn" id="4_6xi3y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6n86l"]
+size = Vector2(618, 258)
 
 [node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players", "TimeLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 2.0
-offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vtsk7")
@@ -29,28 +32,33 @@ offset_bottom = 645.0
 
 [node name="Hand" type="ItemList" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_top = -0.00617284
-anchor_bottom = -0.00617284
-offset_top = 396.0
 offset_right = 320.0
-offset_bottom = 652.0
-metadata/_edit_use_anchors_ = true
+offset_bottom = 256.0
 
 [node name="ClearButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 760.0
-offset_top = 522.0
-offset_right = 1149.0
-offset_bottom = 647.0
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -392.0
+offset_top = -198.0
+offset_right = -3.0
+offset_bottom = -73.0
+grow_horizontal = 0
+grow_vertical = 2
 text = "Clear Table"
 
 [node name="Board" type="ItemList" parent="."]
-layout_mode = 0
-offset_left = 323.0
-offset_top = 399.0
-offset_right = 757.0
-offset_bottom = 648.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -217.0
+offset_right = 217.0
+offset_bottom = 249.0
+grow_horizontal = 2
 
 [node name="FinishButton" type="Button" parent="."]
 visible = false
@@ -63,24 +71,79 @@ text = "Finish
 "
 
 [node name="Turn" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 322.0
-offset_right = 575.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -126.5
+offset_right = 126.5
 offset_bottom = 40.0
+grow_horizontal = 2
 
 [node name="Players" type="ItemList" parent="."]
-layout_mode = 0
-offset_left = 759.0
-offset_top = 400.0
-offset_right = 1149.0
-offset_bottom = 520.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -390.0
+offset_bottom = 120.0
+grow_horizontal = 0
 
 [node name="TimeLabel" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 2.0
-offset_top = -2.0
-offset_right = 319.0
-offset_bottom = 38.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 317.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="Table" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_6n86l")
+expand_mode = 2
+
+[node name="CardDropArea" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CardDropArea"]
+position = Vector2(592, 390)
+shape = SubResource("RectangleShape2D_6n86l")
+
+[node name="HandUI" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -185.5
+offset_top = -95.0
+offset_right = 185.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="CardUI" parent="HandUI" instance=ExtResource("4_6xi3y")]
+layout_mode = 2
+
+[node name="CardUI2" parent="HandUI" instance=ExtResource("4_6xi3y")]
+layout_mode = 2
+
+[node name="CardUI3" parent="HandUI" instance=ExtResource("4_6xi3y")]
+layout_mode = 2
+
+[node name="CardUI4" parent="HandUI" instance=ExtResource("4_6xi3y")]
+layout_mode = 2
+
+[node name="CardUI5" parent="HandUI" instance=ExtResource("4_6xi3y")]
+layout_mode = 2
 
 [connection signal="item_clicked" from="Hand" to="." method="_on_hand_item_clicked"]
 [connection signal="pressed" from="ClearButton" to="." method="_on_clear_button_pressed"]
