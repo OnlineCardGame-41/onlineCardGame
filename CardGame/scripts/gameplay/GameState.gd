@@ -15,8 +15,10 @@ signal curse_added(pid: int, turns: int)      # новое проклятье
 var players: PackedInt32Array
 var hands: Dictionary = {}
 var boards: Dictionary = {}
-var shields: Dictionary = {}         # pid -> shield count
-var curses: Dictionary = {}   # pid -> [turns]
+var shields: Dictionary = {}        
+var curses: Dictionary = {}   
+var skip_turns: Dictionary = {}      
+var draw_bonus: Dictionary = {}     
 var active_idx = 0
 @onready var turn_timer := $"../TurnTimer"
 var pv: Control
@@ -42,7 +44,12 @@ func start_match(pids: PackedInt32Array) -> void:
 func _begin_turn(idx: int) -> void:
 	active_idx = idx
 	var pid = players[active_idx]
-
+	
+	if skip_turns.get(pid, 0) > 0:
+		skip_turns[pid] -= 1
+		_begin_turn.rpc((active_idx + 1) % players.size())
+		return
+		
 	# --- process curses only on the server ----------------------------------
 	if multiplayer.is_server():
 		_process_curses(pid)
@@ -128,8 +135,20 @@ func _draw_card(pid: int) -> void:
 		emit_signal("shield_changed", pid, shields[pid])
 		print("Shield blocked draw for player", pid)
 		return
-	var card = CardDeck.draw()
-	rpc("_apply_draw", pid, card)
+		
+	var extra = 0
+	if draw_bonus.has(pid):
+		var data = draw_bonus[pid]
+		extra = data[0]
+		data[1] -= 1
+		if data[1] <= 0:
+			draw_bonus.erase(pid)
+		else:
+			draw_bonus[pid] = data
+
+	for _i in range(1 + extra):
+		var card = CardDeck.draw()
+		rpc("_apply_draw", pid, card)
 
 @rpc("any_peer", "call_local")
 func _apply_card_played(pid: int, card: int) -> void:
@@ -204,61 +223,298 @@ func _others_draw(except_pid: int) -> void:
 	for p in players:
 		if p != except_pid:
 			_draw_card(p)
+			
+#NEW
+
+func choose_target(pool: Array, acting_pid: int = multiplayer.get_unique_id()) -> int:
+	if acting_pid == multiplayer.get_unique_id():
+		var pid = await pv.player_picked
+		while pid not in pool:
+			pid = await pv.player_picked
+		return pid
+	else:
+		# Заглушка
+		return pool[0]
+
+func choose_targets(pool: Array, k: int) -> Array:
+	var res: Array = []
+	while res.size() < k and not pool.is_empty():
+		var pid = await pv.player_picked
+		if pid in pool and pid not in res:
+			res.append(pid)
+	return res
+
+func draw_colored_card(pid: int, color: int, n: int = 1) -> void:
+	for _i in range(n):
+		rpc("_apply_draw", pid, color)
+
+func grant_draw_bonus(pid: int, bonus: int, uses: int) -> void:
+	draw_bonus[pid] = [bonus, uses]
+
+func skip_turn(pid: int, turns: int = 1) -> void:
+	skip_turns[pid] = skip_turns.get(pid, 0) + turns
+
+func discard_table(pid: int) -> void:
+	boards[pid] = []
+	emit_signal("board_cleared", pid, [])
+
+func discard_table_color(pid: int, color: int) -> void:
+	var keep: Array = []
+	for c in boards[pid]:
+		if c != color:
+			keep.append(c)
+	boards[pid] = keep
+	emit_signal("board_cleared", pid, [])
+
+func remove_shield(pid: int, amount: int = 1) -> void:
+	shields[pid] = max(shields.get(pid, 0) - amount, 0)
+	emit_signal("shield_changed", pid, shields[pid])
+
+func reduce_shield_duration(pid: int, turns: int = 1) -> void:
+	remove_shield(pid, turns)
+
+func discard_from_spell(pid: int, selected_by_attacker := true, draw_if_empty := true) -> void:
+	if boards[pid].is_empty():
+		if draw_if_empty:
+			_draw_card(pid)
+		return
+	var idx = selected_by_attacker and 0 or boards[pid].size() - 1
+	boards[pid].remove_at(idx)
+
+func steal_spell_card(victim: int, thief: int) -> void:
+	if boards[victim].is_empty():
+		return
+	var card = boards[victim].pop_back()
+	boards[thief].append(card)
+	emit_signal("card_played", thief, card)
+
+func discard_table_by_shield(pid: int) -> void:
+	var cnt = shields.get(pid, 0)
+	if cnt == 0:
+		remove_shield(pid, 1)
+		return
+	for _i in range(min(cnt, boards[pid].size())):
+		boards[pid].pop_back()
+
+func discard_half_hand(pid: int) -> int:
+	var to_discard := int(floor(hands[pid].size() / 2))
+	for _i in range(to_discard):
+		hands[pid].pop_back()
+	return to_discard
+
+func hand_size(pid: int) -> int:
+	return hands[pid].size()
+
+func transfer_curse(src: int, dst: int, charges: int = 1) -> void:
+	remove_curse(src, charges)
+	for _i in range(charges):
+		add_curse(dst)
+
+func remove_curse(pid: int, charges):
+	if not curses.has(pid):
+		return
+	if charges == INF:
+		curses[pid] = []
+	else:
+		for _i in range(min(charges, curses[pid].size())):
+			curses[pid].pop_back()
+	rpc("_sync_curses", pid, curses[pid])
+
+func remove_curse_all(pid: int) -> void:
+	curses[pid] = []
+	rpc("_sync_curses", pid, [])
+#NEW
 
 # 0 – R, 1 – Y, 2 – B
 func match_cards(seq: Array) -> void:
 	var key = "".join(seq)
+	var pid_self := multiplayer.get_unique_id()
+	var opponents = players.duplicate()
+	opponents.remove_at(opponents.find(pid_self))
+
 	match key:
-		#"00": print("00")
-		#"01": print("01")
-		#"02": print("02")
-		#"10": print("10")
-		#"11": print("11")
-		#"12": print("12")
-		#"20": print("20")
-		#"21": print("21")
+		"00":
+			var tgt = await choose_target(opponents)
+			_draw_card(tgt)
+
+		"01":
+			var tgt = await choose_target(opponents)
+			draw_colored_card(tgt, CardDeck.CardColor.RED)
+
+		"02":
+			var tgt = await choose_target(opponents)
+			grant_draw_bonus(tgt, 1, 999)   # пока простой вариант
+			# Пока не сделано
+		"10":
+			var tgt = await choose_target(opponents)
+			discard_from_spell(tgt, true, true)
+			# В теории работает
+		"11":
+			var tgt = await choose_target(opponents)
+			skip_turn(tgt, 1)
+
+		"12":
+			var tgt = await choose_target(opponents)
+			steal_spell_card(tgt, pid_self)
+			# В теории работает
+		"20":
+			var tgt = await choose_target(opponents)
+			grant_draw_bonus(tgt, 1, 2)
+
+		"21":
+			var tgt = await choose_target(opponents)
+			skip_turn(tgt, 1)   
+
 		"22":
-			give_shield(multiplayer.get_unique_id()) 
-			print("22")
-		"000": 
-			_others_draw(-1)
-			print("000")
-		#"001": print("001")
-		#"002": print("002")
-		#"010": print("010")
-		#"011": print("011")
-		#"012": print("012")
-		#"020": print("020")
-		#"021": print("021")
-		#"022": print("022")
-		#"100": print("100")
-		#"101": print("101")
-		#"102": print("102")
-		#"110": print("110")
-		#"111": print("111")
-		#"112": print("112")
-		#"120": print("120")
-		#"121": print("121")
-		#"122": print("122")
-		#"200": print("200")
-		"201": 
+			give_shield(pid_self, 1)
+
+		"000":
+			for p in players:
+				_draw_card(p)
+
+		"001":
+			var opponents_arr: Array = []          
+			for p in players:
+				if p != pid_self:
+					opponents_arr.append(p)
+
+			var pool: Array = opponents_arr.duplicate()
+			var curr = await choose_target(pool)  
+
+			for _i in range(players.size() + 2):
+				_draw_card(curr)
+
+				var remove_idx := pool.find(curr)
+				if remove_idx != -1:
+					pool.remove_at(remove_idx)
+
+				if pool.is_empty():
+					break
+				curr = await choose_target(pool, curr)
+
+		
+		"002":
+			var tgt = await choose_target(opponents)
+			reduce_shield_duration(tgt, 1)
+
+		"010":
+			var targets: Array = []
+			for p in opponents:
+				if not curses[p].is_empty():
+					targets.append(p)
+			for t in targets:
+				add_curse(t)
+
+		"011":
+			for p in players:
+				discard_table_color(p, CardDeck.CardColor.YELLOW)
+
+		"012":
+			for p in players:
+				discard_table(p)
+
+		"020":
+			var targets = await choose_targets(opponents, max(players.size()-1, 2))
+			for t in targets:
+				discard_table(t)
+
+		"021":
+			var targets = await choose_targets(opponents, players.size() - 2)
+			for t in targets:
+				remove_shield(t, 1)
+
+		"022":
+			var targets = await choose_targets(opponents, players.size() - 2)
+			for t in targets:
+				discard_table_by_shield(t)
+
+		"100":
+			# Пока не сделано
+			for p in opponents:
+				if not curses[p].is_empty():
+					add_curse(p)
+
+		"101":
 			for p in players:
 				add_curse(p)
-			give_shield(multiplayer.get_unique_id())
-			print("201")
-		#"202": print("202")
-		#"210": print("210")
-		#"211": print("211")
-		#"212": print("212")
-		#"220": print("220")
-		#"221": print("221")
+
+		"102":
+			# Пока не сделано
+			for p in players:
+				if shields.get(p, 0) > 0:
+					grant_draw_bonus(p, shields[p], 1)
+
+		"110":
+			for p in players:
+				discard_table_color(p, CardDeck.CardColor.RED)
+
+		"111":
+			var targets = await choose_targets(opponents, min(players.size()-1, 2))
+			for t in targets:
+				skip_turn(t, 2)
+
+		"112":
+			for p in players:
+				discard_table_color(p, CardDeck.CardColor.BLUE)
+
+		"120":
+			var tgt = await choose_target(opponents)
+			transfer_curse(pid_self, tgt, 1)
+
+		"121":
+			remove_curse(pid_self, 1)
+
+		"122":
+			var discarded = discard_half_hand(pid_self)
+			if hand_size(pid_self) < discarded:
+				_others_draw(-1)
+
+		"200":
+			var targets = await choose_targets(opponents, min(players.size()-1, 2))
+			var grp = [pid_self] + targets
+			for p in grp:
+				_draw_card(p)
+				give_shield(p)
+
+		"201":
+			for p in players:
+				add_curse(p)
+			give_shield(pid_self)
+
+		"202":
+			var tgt = await choose_target(opponents)
+			remove_shield(tgt, 1)
+			give_shield(pid_self)
+
+		"210":
+			#for p in players:
+				#return _table_to_hand(p)
+			_draw_card(pid_self)
+
+		"211":
+			var targets = await choose_targets(opponents, players.size() - 2)
+			var grp = [pid_self] + targets
+			for p in grp:
+				_draw_card(p)
+				add_curse(p)
+
+		"212":
+			# Пока не сделано
+			give_shield(pid_self) 
+			grant_draw_bonus(pid_self, 1, 1)
+
+		"220":
+			# Пока не сделано
+			var tgt = await choose_target(opponents)
+			give_shield(tgt)   
+
+		"221":
+			remove_curse_all(pid_self)
+
 		"222":
-			give_shield(multiplayer.get_unique_id(), 2) 
-			print("222")
+			give_shield(pid_self, 2)
+
 		_:
-			var pid = await pv.player_picked
-			if not pid:
-				return
-			print("Player Picked", pid)
-			_draw_card(pid)
-			print("no match")
+			var pid_pick = await pv.player_picked
+			if pid_pick:
+				_draw_card(pid_pick)
