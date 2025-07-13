@@ -200,10 +200,12 @@ func _discard_last(pid: int) -> void:
 	if not hands[pid].is_empty():
 		hands[pid].pop_back()
 
-func _others_draw(except_pid: int) -> void:
+func _others_draw(except_pid: int, card_number: int) -> void:
 	for p in players:
 		if p != except_pid:
-			_draw_card(p)
+			while(card_number != 0):
+				_draw_card(p)
+				card_number -= 1
 
 # 0 – R, 1 – Y, 2 – B
 func match_cards(seq: Array) -> void:
@@ -221,7 +223,8 @@ func match_cards(seq: Array) -> void:
 			give_shield(multiplayer.get_unique_id()) 
 			print("22")
 		"000": 
-			_others_draw(-1)
+			_others_draw(-1, 2)
+			_draw_card(-1)
 			print("000")
 		#"001": print("001")
 		#"002": print("002")
@@ -253,7 +256,7 @@ func match_cards(seq: Array) -> void:
 		#"220": print("220")
 		#"221": print("221")
 		"222":
-			give_shield(multiplayer.get_unique_id(), 2) 
+			give_shield(multiplayer.get_unique_id(), 3) 
 			print("222")
 		_:
 			var pid = await pv.player_picked
