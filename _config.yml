@@ -1,5 +1,38 @@
-theme: jekyll-theme-minimal
+remote_theme: just-the-docs/just-the-docs        # → pulls theme at build time :contentReference[oaicite:0]{index=0}
+color_scheme: dark                               # default look is dark :contentReference[oaicite:1]{index=1}
+
+# ---------------------------------------------------------------------------
+# 2 — Tell Jekyll that everything in _docs/ is one collection
+#     (rename your existing docs/ folder to _docs — the leading underscore
+#     is how Jekyll recognises a collection directory)
 collections:
   docs:
-    output: true          
-    permalink: /docs/:path/
+    output: true
+    permalink: "/docs/:path/"                    # nice clean URLs
+
+# Let Just-the-Docs put that collection straight into the sidebar
+just_the_docs:
+  collections:
+    docs:
+      name: ""          # leave blank → no top-level “Docs” label
+      nav_fold: false   # true = collapsed by default
+
+# ---------------------------------------------------------------------------
+# 3 — Site-wide defaults for every file in _docs/
+defaults:
+  - scope:
+      path: "_docs"     # everything in the collection
+      type: docs
+    values:
+      layout: default   # sidebar + content
+      # nav_order: 100  # uncomment to force a default order
+
+# ---------------------------------------------------------------------------
+# 4 — Only plugins that GitHub Pages already whitelists
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-include-cache
+# ---------------------------------------------------------------------------
+markdown: kramdown
+# ---------------------------------------------------------------------------
