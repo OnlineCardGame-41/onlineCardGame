@@ -76,13 +76,11 @@ to produce `CardGame.exe`. Drop the binary onto any Windows 10+ machine and co
 - **Automation**
     
     - [Continuous Integration](docs/automation/continuous-integration.md)
+    - 
 - [**Architecture**](docs/architecture/architecture.md)
-    
-    - [Static view](docs/architecture/static-view.png)
-        
-    - [Dynamic view](docs/architecture/dynamic-view.png)
-        
-    - [Deployment view](docs/architecture/deployment-view.png)
+   - [Static view](docs/architecture/component-diagram.png)
+   - [Dynamic view](docs/architecture/sequence-join-game.png)
+   - [Deployment view](docs/architecture/deployment.png)
 ---
 
 ## Quality Assurance
