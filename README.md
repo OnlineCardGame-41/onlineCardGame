@@ -60,9 +60,8 @@ Yep just as you asked =)
 
 ## Documentation
 
-- [**Development Process**] – CONTRIBUTING.md
     
-    - [Kanban board](https://github.com/orgs/OnlineCardGame-41/projects/2)
+- [Kanban board](https://github.com/orgs/OnlineCardGame-41/projects/2)
         
         
 - [**Secrets Management**](docs/secrets-management.md)
