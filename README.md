@@ -66,14 +66,14 @@ Yep just as you asked =)
         
 - [**Secrets Management**](docs/secrets-management.md)
     
-- [**Quality Attributes & Scenarios**](docs/quality-attributes/quality-attribute-scenarios.md)
+- [**Quality Attributes & Scenarios**](docs/quality-assurance/quality-attribute-scenarios.md)
     
 - **Quality Assurance**
     
     - [Automated tests](docs/quality-assurance/automated-tests.md)
         
     - [User acceptance tests](docs/quality-assurance/user-acceptance-tests.md)
-        
+         
 - **Automation**
     
     - [Continuous Integration](docs/automation/continuous-integration.md)
