@@ -53,9 +53,8 @@ godot --export-release "Windows Desktop"
 ```
 
 to produce `CardGame.exe`. Drop the binary onto any Windows 10+ machine and connect it to the same LAN or make the server publicly reachable on ports 80/443 (TCP) and 3478 (UDP).
-# I just copy and paste without reading
-Yep just as you asked =)
 
+# I'm not copiyng and pasting without reading
 ---
 
 ## Documentation
