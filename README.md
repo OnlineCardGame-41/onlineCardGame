@@ -1,7 +1,7 @@
 # OnlineCardGame
 
 
-**Real‑time peer‑to‑peer card battles in your browser and on desktop.**
+**Real‑time peer‑to‑peer card battles in your phone and on desktop.**
 
 [Build](https://github.com/OnlineCardGame-41/onlineCardGame/releases/tag/MVP2.5)  [Demo Video](https://drive.google.com/file/d/16F4Y66ZWBoXNq-1EIaNqmYuY29p4Isc4/view?usp=sharing)
 
@@ -63,38 +63,31 @@ to produce `CardGame.exe`. Drop the binary onto any Windows 10+ machine—I ju
 
 ## Documentation
 
-- **Development Process** – CONTRIBUTING.md
+- [**Development Process**] – CONTRIBUTING.md
     
     - [Kanban board](https://github.com/orgs/OnlineCardGame-41/projects/2)
         
         
-- **Secrets Management** – described in docs/secrets-management.md
+- [**Secrets Management**](docs/secrets-management.md)
     
-- **Quality Attributes & Scenarios** – docs/quality-attributes/quality-attribute-scenarios.md
+- [**Quality Attributes & Scenarios**](docs/quality-attributes/quality-attribute-scenarios.md)
     
 - **Quality Assurance**
     
-    - Automated tests – docs/quality-assurance/automated-tests.md
+    - [Automated tests](docs/quality-assurance/automated-tests.md)
         
-    - User acceptance tests – docs/quality-assurance/user-acceptance-tests.md
+    - [User acceptance tests](docs/quality-assurance/user-acceptance-tests.md)
         
 - **Automation**
     
-    - Continuous Integration – docs/automation/continuous-integration.md
-        
-    - Continuous Deployment – docs/automation/continuous-delivery.md
-        
-- **Architecture** – docs/architecture/architecture.md
+    - [Continuous Integration](docs/automation/continuous-integration.md)
+- [**Architecture**](docs/architecture/architecture.md)
     
-    - Static view – docs/architecture/static-view
+    - [Static view](docs/architecture/static-view.png)
         
-    - Dynamic view – docs/architecture/dynamic-view
+    - [Dynamic view](docs/architecture/dynamic-view.png)
         
-    - Deployment view – docs/architecture/deployment-view
-        
-    - Tech Stack – see _Architecture_ doc
-        
-
+    - [Deployment view](docs/architecture/deployment-view.png)
 ---
 
 ## Quality Assurance
