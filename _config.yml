@@ -21,7 +21,7 @@ just_the_docs:
 # 3 — Site-wide defaults for every file in _docs/
 defaults:
   - scope:
-      path: "_docs"     # everything in the collection
+      path: "docs"     # everything in the collection
       type: docs
     values:
       layout: default   # sidebar + content
