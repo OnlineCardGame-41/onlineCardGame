@@ -17,11 +17,6 @@ Build a lightweight, cross‑platform card game that:
 
 ---
 
-## Project Context Diagram
-
-![Context Diagram](docs/architecture/context-diagram.png)
-
----
 
 ## Feature Roadmap
 
