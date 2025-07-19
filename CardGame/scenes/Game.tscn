@@ -1,36 +1,75 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=8 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
+[ext_resource type="Texture2D" uid="uid://bwcqdjnpbcptt" path="res://src/game_table_no_bg.png" id="4_78awf"]
+[ext_resource type="PackedScene" uid="uid://nfu2vpuoc0mj" path="res://scenes/card_ui.tscn" id="5_aug50"]
+[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://pixelated.tres" id="6_kiw3p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cpr0p"]
+size = Vector2(616, 272)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
+metadata/_edit_lock_ = true
 
 [node name="TurnTimer" type="Timer" parent="."]
 script = ExtResource("3_cpr0p")
 
-[node name="Board" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-metadata/_edit_use_anchors_ = true
-
 [node name="GameState" type="Node" parent="."]
 script = ExtResource("2_qbsmt")
 
-[node name="PlayerViews" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-metadata/_edit_use_anchors_ = true
-
 [node name="CardDropArea" type="Area2D" parent="."]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardDropArea"]
-position = Vector2(588, 390)
+position = Vector2(588, 392)
 shape = SubResource("RectangleShape2D_cpr0p")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(0.5625, 0.684989)
+texture = ExtResource("4_78awf")
+metadata/_edit_lock_ = true
+
+[node name="GameUI" type="CanvasLayer" parent="."]
+
+[node name="Hand" type="HBoxContainer" parent="GameUI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -95.0
+offset_right = 200.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="CardUI" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
+layout_mode = 2
+
+[node name="CardUI4" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
+layout_mode = 2
+
+[node name="CardUI5" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
+layout_mode = 2
+
+[node name="CardUI2" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
+layout_mode = 2
+
+[node name="CardUI3" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
+layout_mode = 2
+
+[node name="BackGround" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="BackGround"]
+material = ExtResource("6_kiw3p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true

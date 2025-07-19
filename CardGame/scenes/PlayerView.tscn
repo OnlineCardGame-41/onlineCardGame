@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://nfu2vpuoc0mj" path="res://scenes/card_ui.tscn" id="4_6xi3y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6n86l"]
-size = Vector2(618, 258)
+size = Vector2(616, 255)
 
 [node name="PlayerView" type="Control" node_paths=PackedStringArray("Hand", "Board", "Turn", "Players", "TimeLabel")]
 layout_mode = 3
@@ -24,40 +24,48 @@ TimeLabel = NodePath("TimeLabel")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 material = ExtResource("2_88nkq")
-layout_mode = 0
-offset_left = -1.0
-offset_top = -1.0
-offset_right = 1149.0
-offset_bottom = 645.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Table" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_6n86l")
+expand_mode = 2
 
 [node name="Hand" type="ItemList" parent="."]
 layout_mode = 1
-offset_right = 320.0
-offset_bottom = 256.0
+anchors_preset = -1
+anchor_right = 0.277778
+anchor_bottom = 0.395062
+offset_right = -48.0
 
 [node name="ClearButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
+anchors_preset = -1
+anchor_left = 0.784722
+anchor_top = 0.814815
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -392.0
-offset_top = -198.0
-offset_right = -3.0
-offset_bottom = -73.0
+anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
 text = "Clear Table"
 
 [node name="Board" type="ItemList" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -217.0
-offset_right = 217.0
-offset_bottom = 249.0
+anchors_preset = -1
+anchor_left = 0.784722
+anchor_right = 1.00174
+anchor_bottom = 0.395062
 grow_horizontal = 2
 
 [node name="FinishButton" type="Button" parent="."]
@@ -72,61 +80,43 @@ text = "Finish
 
 [node name="Turn" type="RichTextLabel" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -126.5
-offset_right = 126.5
-offset_bottom = 40.0
+anchors_preset = -1
+anchor_left = 0.390191
+anchor_right = 0.609809
+anchor_bottom = 0.0617284
 grow_horizontal = 2
 
 [node name="Players" type="ItemList" parent="."]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -390.0
-offset_bottom = 120.0
+anchors_preset = -1
+anchor_top = 0.814815
+anchor_right = 0.236111
+anchor_bottom = 1.0
 grow_horizontal = 0
 
 [node name="TimeLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -20.0
-offset_right = 317.0
-offset_bottom = 20.0
+anchors_preset = -1
+anchor_left = 0.361111
+anchor_top = 0.0617284
+anchor_right = 0.636285
+anchor_bottom = 0.123457
 grow_vertical = 2
-
-[node name="Table" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(1152, 648)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_6n86l")
-expand_mode = 2
 
 [node name="CardDropArea" type="Area2D" parent="."]
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardDropArea"]
-position = Vector2(592, 390)
+position = Vector2(588, 391.5)
 shape = SubResource("RectangleShape2D_6n86l")
 
 [node name="HandUI" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = -1
+anchor_left = 0.338976
+anchor_top = 0.853395
+anchor_right = 0.661024
 anchor_bottom = 1.0
-offset_left = -185.5
-offset_top = -95.0
-offset_right = 185.5
 grow_horizontal = 2
 grow_vertical = 0
 

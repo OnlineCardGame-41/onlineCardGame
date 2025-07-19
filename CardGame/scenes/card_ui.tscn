@@ -1,14 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://nfu2vpuoc0mj"]
+[gd_scene load_steps=9 format=3 uid="uid://nfu2vpuoc0mj"]
 
 [ext_resource type="Texture2D" uid="uid://bty4ganeqfdu6" path="res://src/blue_card_final.png" id="1_5x102"]
 [ext_resource type="Script" uid="uid://uk0mn6egkj8g" path="res://scripts/gameplay/card_ui.gd" id="1_e1hm3"]
+[ext_resource type="Script" uid="uid://dhybycajngfsj" path="res://scripts/gameplay/CardStates/cardStateMachine.gd" id="3_birkm"]
+[ext_resource type="Script" uid="uid://bv2rlvylqr100" path="res://scripts/gameplay/CardStates/cardBaseState.gd" id="4_xou0u"]
+[ext_resource type="Script" uid="uid://dehxkj0kghch4" path="res://scripts/gameplay/CardStates/cardClickedState.gd" id="5_2iqob"]
+[ext_resource type="Script" uid="uid://ct4nhrhw065ib" path="res://scripts/gameplay/CardStates/cardDraggingState.gd" id="6_8creq"]
+[ext_resource type="Script" uid="uid://brkbdkjffbc8i" path="res://scripts/gameplay/CardStates/cardRealesedState.gd" id="7_gf8qa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e1hm3"]
 size = Vector2(71, 95)
 
 [node name="CardUI" type="Control"]
 texture_filter = 1
-custom_minimum_size = Vector2(71, 95)
+custom_minimum_size = Vector2(71, 96)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,3 +37,21 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DroppointDetector"]
 position = Vector2(35.5, 47.5)
 shape = SubResource("RectangleShape2D_e1hm3")
+
+[node name="CardStateMachine" type="Node" parent="."]
+script = ExtResource("3_birkm")
+
+[node name="CardBaseState" type="Node" parent="CardStateMachine"]
+script = ExtResource("4_xou0u")
+
+[node name="CardClickedState" type="Node" parent="CardStateMachine"]
+script = ExtResource("5_2iqob")
+state = 1
+
+[node name="CardDraggingState" type="Node" parent="CardStateMachine"]
+script = ExtResource("6_8creq")
+state = 2
+
+[node name="CardRealesedState" type="Node" parent="CardStateMachine"]
+script = ExtResource("7_gf8qa")
+state = 4
