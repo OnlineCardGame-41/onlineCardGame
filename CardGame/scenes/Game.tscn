@@ -33,7 +33,7 @@ scale = Vector2(0.5625, 0.684989)
 texture = ExtResource("4_78awf")
 metadata/_edit_lock_ = true
 
-[node name="GameUI" type="CanvasLayer" parent="."]
+[node name="GameUI" type="CanvasLayer" parent="." groups=["ui_layer"]]
 
 [node name="Hand" type="HBoxContainer" parent="GameUI"]
 anchors_preset = 7
@@ -46,6 +46,7 @@ offset_top = -95.0
 offset_right = 200.0
 grow_horizontal = 2
 grow_vertical = 0
+alignment = 1
 
 [node name="CardUI" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
 layout_mode = 2
@@ -72,4 +73,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_lock_ = true

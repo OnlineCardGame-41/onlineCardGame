@@ -7,11 +7,10 @@ var current_state: CardState
 var states := {}
 
 func init(card: CardUI) -> void:
-	for child in get_children():
-		if child is CardState:
-			states[child.state] = child
-			child.transition_requested.connect(_on_transition_requested)
-			child.card_ui = child
+	for child: CardState in get_children():
+		states[child.state] = child
+		child.transition_requested.connect(_on_transition_requested)
+		child.card_ui = card
 	
 	if initial_state:
 		initial_state.enter()
