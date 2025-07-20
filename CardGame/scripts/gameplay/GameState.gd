@@ -20,7 +20,7 @@ var skip_turns: Dictionary = {}
 var draw_bonus: Dictionary = {}     
 var active_idx = 0
 @onready var turn_timer := $"../TurnTimer"
-var pv: Control
+@onready var ui: CanvasLayer = $UI
 # ---------------------------------------------------------------------------
 # Match lifecycle
 # ---------------------------------------------------------------------------
@@ -59,7 +59,6 @@ func _begin_turn(idx: int) -> void:
 	turn_timer.start(turn_time)
 
 func _process(delta: float) -> void:
-	#print(hands)
 	pass
 
 # ---------------------------------------------------------------------------
@@ -112,6 +111,7 @@ func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 
 	_check_victory(pid)
 	wait = false
+	print(hands)
 	_begin_turn.rpc((active_idx + 1) % players.size())
 	
 
@@ -220,8 +220,8 @@ func add_curse(pid: int, turns: int = 3) -> void:
 # Helpers
 # ---------------------------------------------------------------------------
 
-func _set_player_view(pv: Control):
-	self.pv = pv
+func _set_player_view(ui: CanvasLayer):
+	self.ui = ui
 
 func _discard_last(pid: int) -> void:
 	if not hands[pid].is_empty():
@@ -236,9 +236,9 @@ func _others_draw(except_pid: int) -> void:
 
 func choose_target(pool: Array, acting_pid: int = multiplayer.get_unique_id()) -> int:
 	if acting_pid == multiplayer.get_unique_id():
-		var pid = await pv.player_picked
+		var pid = await ui.player_picked
 		while pid not in pool:
-			pid = await pv.player_picked
+			pid = await ui.player_picked
 		return pid
 	else:
 		# Заглушка
@@ -247,7 +247,7 @@ func choose_target(pool: Array, acting_pid: int = multiplayer.get_unique_id()) -
 func choose_targets(pool: Array, k: int) -> Array:
 	var res: Array = []
 	while res.size() < k and not pool.is_empty():
-		var pid = await pv.player_picked
+		var pid = await ui.player_picked
 		if pid in pool and pid not in res:
 			res.append(pid)
 	return res
@@ -523,6 +523,6 @@ func match_cards(seq: Array) -> void:
 			give_shield(pid_self, 2)
 
 		_:
-			var pid_pick = await pv.player_picked
+			var pid_pick = await ui.player_picked
 			if pid_pick:
 				_draw_card(pid_pick)

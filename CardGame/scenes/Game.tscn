@@ -51,19 +51,28 @@ offset_right = -0.46402
 offset_bottom = -0.296082
 
 [node name="Players" type="ItemList" parent="UI"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 1.0
+offset_top = 431.0
+offset_right = 380.0
+offset_bottom = 563.0
 
 [node name="Turn" type="RichTextLabel" parent="UI"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 2.0
+offset_right = 84.0
+offset_bottom = 42.0
+metadata/_edit_use_anchors_ = true
 
 [node name="Time" type="RichTextLabel" parent="UI"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 99.0
+offset_top = 2.0
+offset_right = 139.0
+offset_bottom = 42.0
+metadata/_edit_use_anchors_ = true
 
 [node name="CastSpell" type="Button" parent="UI"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = -1.0
+offset_top = 562.0
+offset_right = 381.0
+offset_bottom = 647.0
 text = "CastSpell
 "

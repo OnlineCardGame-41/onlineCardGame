@@ -58,7 +58,7 @@ func _on_card_drawn(pid: int, card: CardDeck.CardColor):
 		var card_sc = CARD_SCENE.instantiate()
 		card_sc.color = card 
 		card_sc.home_field = Hand
-		card_sc.index = card_sc.home_field.get_child_count()
+		card_sc.index = _gs.hands[multiplayer.get_unique_id()].size()
 		Hand.cards_holder.add_child(card_sc)
 
 func _on_turn_started(turn_pid: int, time_left: float):
