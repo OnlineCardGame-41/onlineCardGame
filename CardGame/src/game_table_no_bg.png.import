@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwcqdjnpbcptt"
-path="res://.godot/imported/game_table_no_bg.png-385c9aae32adb75380e7f6263d7a6f37.ctex"
+path="res://.godot/imported/game_table_no_bg.png-3bac015a784e7398f5200dafdc31b477.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://game_table_no_bg.png"
-dest_files=["res://.godot/imported/game_table_no_bg.png-385c9aae32adb75380e7f6263d7a6f37.ctex"]
+source_file="res://src/game_table_no_bg.png"
+dest_files=["res://.godot/imported/game_table_no_bg.png-3bac015a784e7398f5200dafdc31b477.ctex"]
 
 [params]
 

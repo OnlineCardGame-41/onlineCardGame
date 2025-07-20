@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=6 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
+[ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
+[ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
@@ -10,19 +12,39 @@ script = ExtResource("1_78awf")
 [node name="TurnTimer" type="Timer" parent="."]
 script = ExtResource("3_cpr0p")
 
-[node name="Board" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-metadata/_edit_use_anchors_ = true
-
 [node name="GameState" type="Node" parent="."]
 script = ExtResource("2_qbsmt")
 
-[node name="PlayerViews" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-metadata/_edit_use_anchors_ = true
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("4_s0nni")
+
+[node name="Node" type="Node" parent="UI" groups=["fields"]]
+
+[node name="Hand" parent="UI/Node" instance=ExtResource("4_78awf")]
+anchor_left = 0.325
+anchor_top = 0.306
+anchor_right = 0.689
+anchor_bottom = 0.534
+offset_left = -0.400024
+offset_top = -0.28801
+offset_right = 0.271606
+offset_bottom = -0.032074
+
+[node name="Board" parent="UI/Node" instance=ExtResource("4_78awf")]
+anchor_left = 0.331
+anchor_top = 0.77
+anchor_right = 0.695
+anchor_bottom = 0.998
+offset_left = -0.312042
+offset_top = 0.039978
+offset_right = 0.359558
+offset_bottom = 0.295898
+
+[node name="Player" type="RichTextLabel" parent="UI"]
+anchors_preset = -1
+anchor_top = 0.94
+anchor_right = 0.332
+anchor_bottom = 1.002
+offset_top = -0.120056
+offset_right = -0.46402
+offset_bottom = -0.296082

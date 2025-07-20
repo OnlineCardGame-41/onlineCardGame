@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5s6uo0ry6s80"]
+
+[ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="1_7w8s4"]
+[ext_resource type="Script" uid="uid://c1v1cunygml7o" path="res://scenes/example.gd" id="1_pssa7"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_pssa7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." groups=["fields"]]
+
+[node name="Field" parent="CanvasLayer" instance=ExtResource("1_7w8s4")]
+
+[node name="Field2" parent="CanvasLayer" instance=ExtResource("1_7w8s4")]
+anchor_left = 0.194
+anchor_top = 0.526
+anchor_right = 0.558
+anchor_bottom = 0.755
+offset_left = -0.488007
+offset_top = 0.151978
+offset_right = 0.183594
+offset_bottom = -0.240082
+
+[node name="Field3" parent="CanvasLayer" instance=ExtResource("1_7w8s4")]
+anchor_left = 0.481
+anchor_top = 0.046
+anchor_right = 0.845
+anchor_bottom = 0.275
+offset_left = -0.112061
+offset_top = 0.191998
+offset_right = 0.55957
+offset_bottom = -0.200043
