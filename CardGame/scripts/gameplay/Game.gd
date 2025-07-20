@@ -5,6 +5,7 @@ extends Node2D
 
 func _ready() -> void:
 	_gs.connect("turn_started", Callable(self, "_on_first_turn_started"), CONNECT_ONE_SHOT)
+	_gs.start_match.rpc([0])
 
 
 func _on_first_turn_started(_pid: int, _time: float) -> void:

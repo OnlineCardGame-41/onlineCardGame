@@ -20,7 +20,7 @@ script = ExtResource("4_s0nni")
 
 [node name="Node" type="Node" parent="UI" groups=["fields"]]
 
-[node name="Hand" parent="UI/Node" instance=ExtResource("4_78awf")]
+[node name="Board" parent="UI/Node" instance=ExtResource("4_78awf")]
 anchor_left = 0.325
 anchor_top = 0.306
 anchor_right = 0.689
@@ -29,8 +29,9 @@ offset_left = -0.400024
 offset_top = -0.28801
 offset_right = 0.271606
 offset_bottom = -0.032074
+is_final = true
 
-[node name="Board" parent="UI/Node" instance=ExtResource("4_78awf")]
+[node name="Hand" parent="UI/Node" instance=ExtResource("4_78awf")]
 anchor_left = 0.331
 anchor_top = 0.77
 anchor_right = 0.695
@@ -48,3 +49,21 @@ anchor_bottom = 1.002
 offset_top = -0.120056
 offset_right = -0.46402
 offset_bottom = -0.296082
+
+[node name="Players" type="ItemList" parent="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Turn" type="RichTextLabel" parent="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Time" type="RichTextLabel" parent="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CastSpell" type="Button" parent="UI"]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "CastSpell
+"

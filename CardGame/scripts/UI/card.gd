@@ -27,6 +27,7 @@ func _init(cardColor: CardDeck.CardColor = CardDeck.draw()) -> void:
 	color = cardColor
 
 
+
 func _input(event):
 	state_machine.on_input(event)
 

@@ -1,6 +1,7 @@
 class_name Field
 extends MarginContainer
 
+signal card_added(idx: int, is_left: bool)
 
 @onready var card_drop_area_right: Area2D = $CardDropAreaRight
 @onready var card_drop_area_left: Area2D = $CardDropAreaLeft
@@ -28,10 +29,14 @@ func set_new_card(card: Card):
 func card_reposition(card: Card):
 	var field_areas = card.drop_point_detector.get_overlapping_areas()
 	var index: int = 0
+	var id = card.index
 	
 	index = cards_holder.get_child_count() if field_areas.has(card_drop_area_right) else 0
 
 	card.reparent(cards_holder)
 	cards_holder.move_child(card, index)
 	if is_final:
-		card.mouse_filter = MOUSE_FILTER_IGNORE 
+		card.mouse_filter = MOUSE_FILTER_IGNORE
+		 
+	emit_signal("card_added", id, index==0)
+	

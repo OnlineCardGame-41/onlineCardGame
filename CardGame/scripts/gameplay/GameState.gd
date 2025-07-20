@@ -6,9 +6,8 @@ signal card_drawn(pid: int, card: CardDeck.CardColor)
 signal card_played(pid: int, card: CardDeck.CardColor)
 signal board_cleared(pid: int, seq: Array)
 signal match_ended(winner_pid: int)
-
 signal shield_changed(pid: int, count: int)
-signal curse_added(pid: int, turns: int)      # новое проклятье
+signal curse_added(pid: int, turns: int)      
 
 @export var turn_time := 40.0  # секунд на ход
 
@@ -30,6 +29,7 @@ var pv: Control
 func start_match(pids: PackedInt32Array) -> void:
 	players = pids
 	for pid in players:
+		print(pid, "KEK")
 		hands[pid] = []
 		boards[pid] = []
 		shields[pid] = 0
@@ -57,6 +57,10 @@ func _begin_turn(idx: int) -> void:
 	turn_timer.stop()
 	emit_signal("turn_started", pid, turn_time)
 	turn_timer.start(turn_time)
+
+func _process(delta: float) -> void:
+	#print(hands)
+	pass
 
 # ---------------------------------------------------------------------------
 # Curses helper
@@ -92,8 +96,9 @@ func request_draw() -> void:
 	_draw_card(players[active_idx])
 
 var wait = false
-func request_play(card_idx: int, to_board: bool) -> void:
+func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 	var pid = multiplayer.get_unique_id()
+	print(players)
 	if pid != players[active_idx]:
 		return
 	if wait:
@@ -101,7 +106,7 @@ func request_play(card_idx: int, to_board: bool) -> void:
 	wait = true
 	if to_board:
 		var card = hands[pid][card_idx]
-		_play_card(pid, card)
+		_play_card(pid, card, is_left)
 	else:
 		await _resolve_board(pid)
 
@@ -151,19 +156,22 @@ func _draw_card(pid: int) -> void:
 		rpc("_apply_draw", pid, card)
 
 @rpc("any_peer", "call_local")
-func _apply_card_played(pid: int, card: int) -> void:
+func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
+	print("card_played")
 	if not boards.has(pid):
 		boards[pid] = []
-	boards[pid].append(card)
-
+	if is_left:
+		boards[pid].push_front(card)
+	else:
+		boards[pid].push_back(card)
+		
 	var idx = hands[pid].find(card)
 	if idx != -1:
 		hands[pid].remove_at(idx)
-
 	emit_signal("card_played", pid, card)
 
-func _play_card(pid: int, card: int) -> void:
-	rpc("_apply_card_played", pid, card)
+func _play_card(pid: int, card: int, is_left: bool) -> void:
+	rpc("_apply_card_played", pid, card, is_left)
 
 @rpc("any_peer", "call_local")
 func _apply_board_cleared(pid: int, seq: Array) -> void:
