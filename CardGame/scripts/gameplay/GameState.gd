@@ -111,7 +111,9 @@ func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 
 	_check_victory(pid)
 	wait = false
-	print(hands)
+	print("Hands: ",hands)
+	print("Boards: ", boards)
+	print("Card idx: ", card_idx)
 	_begin_turn.rpc((active_idx + 1) % players.size())
 	
 

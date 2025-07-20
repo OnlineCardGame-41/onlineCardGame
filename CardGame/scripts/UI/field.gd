@@ -27,16 +27,15 @@ func set_new_card(card: Card):
 
 
 func card_reposition(card: Card):
-	var field_areas = card.drop_point_detector.get_overlapping_areas()
-	var index: int = 0
-	var id = card.index
-	
-	index = cards_holder.get_child_count() if field_areas.has(card_drop_area_right) else 0
 
-	card.reparent(cards_holder)
-	cards_holder.move_child(card, index)
+	var field_areas = card.drop_point_detector.get_overlapping_areas()
+	var idx = card.index 
+	var put_left = !field_areas.has(card_drop_area_right)
+
+	card.reparent(cards_holder)           
+	cards_holder.move_child(card, 0 if put_left else cards_holder.get_child_count())
 	if is_final:
 		card.mouse_filter = MOUSE_FILTER_IGNORE
-		 
-	emit_signal("card_added", id, index==0)
+	print("PutLeft: ", put_left)
+	emit_signal("card_added", idx, put_left)
 	
