@@ -50,12 +50,6 @@ offset_top = -0.120056
 offset_right = -0.46402
 offset_bottom = -0.296082
 
-[node name="Players" type="ItemList" parent="UI"]
-offset_left = 1.0
-offset_top = 431.0
-offset_right = 380.0
-offset_bottom = 563.0
-
 [node name="Turn" type="RichTextLabel" parent="UI"]
 offset_top = 2.0
 offset_right = 84.0
@@ -76,3 +70,11 @@ offset_right = 381.0
 offset_bottom = 647.0
 text = "CastSpell
 "
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 99.0
+offset_top = 121.0
+offset_right = 139.0
+offset_bottom = 161.0

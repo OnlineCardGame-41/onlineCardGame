@@ -2,7 +2,6 @@ extends CardState
 
 
 func _enter():
-	print(card.get_index(), " HHHHHHHHHHHHHHHH")
 	card.index = card.get_index()
 	
 	var canvas_layer := get_tree().get_first_node_in_group("fields")
