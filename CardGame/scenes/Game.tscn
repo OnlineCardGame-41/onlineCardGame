@@ -98,6 +98,7 @@ offset_left = -0.119
 offset_top = 0.0549965
 offset_right = 0.118988
 offset_bottom = 0.0579834
+theme_override_constants/separation = 70
 
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3

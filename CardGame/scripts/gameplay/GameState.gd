@@ -29,9 +29,7 @@ var active_idx = 0
 func start_match(pids: PackedInt32Array) -> void:
 	players = pids
 	ui.initial()
-	print("IAHTEYOU", players)
 	for pid in players:
-		print(pid, "KEK")
 		hands[pid] = []
 		boards[pid] = []
 		shields[pid] = 0
@@ -99,7 +97,6 @@ func request_draw() -> void:
 var wait = false
 func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 	var pid = multiplayer.get_unique_id()
-	print(players)
 	if pid != players[active_idx]:
 		return
 	if wait:
@@ -113,9 +110,6 @@ func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 
 	_check_victory(pid)
 	wait = false
-	print("Hands: ",hands)
-	print("Boards: ", boards)
-	print("Card idx: ", card_idx)
 	_begin_turn.rpc((active_idx + 1) % players.size())
 	
 
@@ -172,7 +166,7 @@ func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
 	var idx = hands[pid].find(card)
 	if idx != -1:
 		hands[pid].remove_at(idx)
-	print("card_played")
+	print(boards)
 	emit_signal("card_played", pid, card)
 
 func _play_card(pid: int, card: int, is_left: bool) -> void:
