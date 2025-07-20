@@ -78,3 +78,27 @@ offset_left = 99.0
 offset_top = 121.0
 offset_right = 139.0
 offset_bottom = 161.0
+
+[node name="Control2" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 99.0
+offset_top = 121.0
+offset_right = 139.0
+offset_bottom = 161.0
+
+[node name="Control3" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 99.0
+offset_top = 121.0
+offset_right = 139.0
+offset_bottom = 161.0
+
+[node name="Control4" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 99.0
+offset_top = 121.0
+offset_right = 139.0
+offset_bottom = 161.0
