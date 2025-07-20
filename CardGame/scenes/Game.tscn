@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=9 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://bwcqdjnpbcptt" path="res://src/game_table_no_bg.png" id="4_78awf"]
 [ext_resource type="PackedScene" uid="uid://nfu2vpuoc0mj" path="res://scenes/card_ui.tscn" id="5_aug50"]
+[ext_resource type="Script" uid="uid://bh5k2aing2yv6" path="res://scripts/gameplay/UI/hand.gd" id="5_kiw3p"]
 [ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://pixelated.tres" id="6_kiw3p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cpr0p"]
@@ -26,6 +27,7 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CardDropArea"]
 position = Vector2(588, 392)
 shape = SubResource("RectangleShape2D_cpr0p")
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(576, 324)
@@ -47,6 +49,8 @@ offset_right = 200.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
+script = ExtResource("5_kiw3p")
+metadata/_edit_lock_ = true
 
 [node name="CardUI" parent="GameUI/Hand" instance=ExtResource("5_aug50")]
 layout_mode = 2
