@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=7 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
 [ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
+[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://materials/pixelated.tres" id="6_aug50"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
@@ -74,10 +75,10 @@ text = "CastSpell
 [node name="Enemy1" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 218.0
-offset_top = 50.0
-offset_right = 591.0
-offset_bottom = 197.0
+offset_left = 202.0
+offset_top = 27.0
+offset_right = 575.0
+offset_bottom = 174.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy1"]
 layout_mode = 1
@@ -103,10 +104,10 @@ theme_override_constants/separation = 70
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 590.0
-offset_top = 47.0
-offset_right = 962.0
-offset_bottom = 195.0
+offset_left = 600.0
+offset_top = 24.0
+offset_right = 972.0
+offset_bottom = 172.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy2"]
 layout_mode = 1
@@ -131,10 +132,11 @@ offset_bottom = 0.0579834
 [node name="Enemy3" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 2.0
-offset_top = 198.0
-offset_right = 374.0
-offset_bottom = 345.0
+offset_left = 33.0
+offset_top = 530.0
+offset_right = 405.0
+offset_bottom = 677.0
+rotation = -1.39626
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy3"]
 layout_mode = 1
@@ -159,10 +161,11 @@ offset_bottom = 0.0579834
 [node name="Enemy4" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 798.0
-offset_top = 195.0
-offset_right = 1148.0
-offset_bottom = 343.0
+offset_left = 968.0
+offset_top = 552.0
+offset_right = 1318.0
+offset_bottom = 700.0
+rotation = -1.74533
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy4"]
 clip_contents = true
@@ -184,3 +187,14 @@ offset_left = -0.11897
 offset_top = 0.0549927
 offset_right = 0.119019
 offset_bottom = 0.0579834
+
+[node name="BackGround" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="BackGround"]
+material = ExtResource("6_aug50")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
