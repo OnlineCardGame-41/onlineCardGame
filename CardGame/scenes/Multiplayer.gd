@@ -280,6 +280,7 @@ func game_start():
 	var peer_ids: PackedInt32Array = [multiplayer.get_unique_id()]
 	peer_ids.append_array(multiplayer.get_peers())
 	if multiplayer.is_server():
+		print("LOLKEKCHABUREK",peer_ids)
 		gs.start_match.rpc(peer_ids)
 
 

@@ -2,9 +2,7 @@ class_name Card
 extends Control
 
 
-@onready var color_rect: ColorRect = $ColorRect
-@onready var label: Label = $Label
-@onready var name_label: Label = $NameLabel
+
 @onready var state_machine: CardStateMachine = $CardStateMachine
 @onready var drop_point_detector: Area2D = $DropPointDetector
 @onready var card_detector: Area2D = $CardsDetector

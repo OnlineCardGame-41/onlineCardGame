@@ -20,7 +20,7 @@ var skip_turns: Dictionary = {}
 var draw_bonus: Dictionary = {}     
 var active_idx = 0
 @onready var turn_timer := $"../TurnTimer"
-@onready var ui: CanvasLayer = $UI
+@onready var ui: CanvasLayer = $"../UI"
 # ---------------------------------------------------------------------------
 # Match lifecycle
 # ---------------------------------------------------------------------------
@@ -28,6 +28,8 @@ var active_idx = 0
 @rpc("authority", "call_local")
 func start_match(pids: PackedInt32Array) -> void:
 	players = pids
+	ui.initial()
+	print("IAHTEYOU", players)
 	for pid in players:
 		print(pid, "KEK")
 		hands[pid] = []
@@ -159,7 +161,7 @@ func _draw_card(pid: int) -> void:
 
 @rpc("any_peer", "call_local")
 func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
-	print("card_played")
+	
 	if not boards.has(pid):
 		boards[pid] = []
 	if is_left:
@@ -170,6 +172,7 @@ func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
 	var idx = hands[pid].find(card)
 	if idx != -1:
 		hands[pid].remove_at(idx)
+	print("card_played")
 	emit_signal("card_played", pid, card)
 
 func _play_card(pid: int, card: int, is_left: bool) -> void:
