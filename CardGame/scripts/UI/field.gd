@@ -5,7 +5,7 @@ extends MarginContainer
 @onready var card_drop_area_right: Area2D = $CardDropAreaRight
 @onready var card_drop_area_left: Area2D = $CardDropAreaLeft
 @onready var cards_holder: HBoxContainer = $CardsHolder
-
+@export var is_final: bool = false
 
 func _ready():
 	$Label.text = name
@@ -33,3 +33,5 @@ func card_reposition(card: Card):
 
 	card.reparent(cards_holder)
 	cards_holder.move_child(card, index)
+	if is_final:
+		card.mouse_filter = MOUSE_FILTER_IGNORE 

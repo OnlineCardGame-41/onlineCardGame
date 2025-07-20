@@ -19,6 +19,7 @@ offset_left = -0.488007
 offset_top = 0.151978
 offset_right = 0.183594
 offset_bottom = -0.240082
+is_final = true
 
 [node name="Field3" parent="CanvasLayer" instance=ExtResource("1_7w8s4")]
 anchor_left = 0.481
