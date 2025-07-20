@@ -9,7 +9,7 @@ HostButton = NodePath("HostButton")
 JoinButton = NodePath("direct connect")
 JoinMode = NodePath("JoinMode")
 JoinList = NodePath("JoinList")
-TakeCard = NodePath("TakeCard")
+TakeCard = NodePath("StartGameButton")
 LobbyInfo = NodePath("LobbyInfo")
 EnterLobbyId = NodePath("EnterLobbyId")
 LobbyId_getter = NodePath("LobbyId_getter")
@@ -66,26 +66,27 @@ offset_bottom = 165.0
 text = "Enter Lobby ID:"
 metadata/_edit_use_anchors_ = true
 
-[node name="TakeCard" type="Button" parent="."]
-offset_left = 469.0
+[node name="StartGameButton" type="Button" parent="."]
+offset_left = 414.0
 offset_top = 606.0
-offset_right = 793.0
+offset_right = 738.0
 offset_bottom = 637.0
-text = "Take Card!"
+text = "Start game
+"
 
 [node name="PlayerName_label" type="Label" parent="."]
-offset_left = 526.0
+offset_left = 455.0
 offset_top = 51.0
-offset_right = 623.0
+offset_right = 696.0
 offset_bottom = 100.0
-text = "Enter Name:
-"
+text = "ONLINE KARD  ARENA KOMBAT"
 
 [node name="PlayerName_getter" type="LineEdit" parent="."]
 offset_left = 349.0
 offset_top = 77.0
 offset_right = 801.0
 offset_bottom = 108.0
+placeholder_text = "Enter your name:)"
 metadata/_edit_use_anchors_ = true
 
 [node name="PING" type="Button" parent="."]
@@ -146,7 +147,7 @@ text = "X"
 
 [connection signal="pressed" from="direct connect" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="TakeCard" to="." method="_on_take_card_pressed"]
+[connection signal="pressed" from="StartGameButton" to="." method="_on_take_card_pressed"]
 [connection signal="pressed" from="PING" to="." method="_on_ping_pressed"]
 [connection signal="pressed" from="JoinMode" to="." method="_on_joinMode_pressed"]
 [connection signal="pressed" from="JoinList" to="." method="_on_join_list_pressed"]
