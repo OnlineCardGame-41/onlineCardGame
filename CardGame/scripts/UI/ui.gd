@@ -36,7 +36,7 @@ func initial() -> void:
 	pid = multiplayer.get_unique_id()
 	var seat_idx = 0
 	print("_seat_of_pid:", _gs.players)
-	for ppid in _gs.players:
+	for ppid: int in _gs.players:
 		if ppid == pid:
 			continue                          # skip yourself
 
@@ -45,6 +45,11 @@ func initial() -> void:
 			break                             # or wrap/extend as you prefer
 
 		_seat_of_pid[ppid] = _enemy_seats[seat_idx]
+		var player: Control = _seat_of_pid[ppid]
+		var nick = player.get_node("NickName")
+		nick.text = Multiplayer.peer_names.get(ppid, "Unknown")
+		
+		
 		seat_idx += 1
 		print("_seat_of_pid:", _seat_of_pid)
 	_refresh_board() 

@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
 [ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
-[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://materials/pixelated.tres" id="6_aug50"]
+[ext_resource type="Material" uid="uid://c3tmw2jmxd4mr" path="res://materials/best.tres" id="6_aug50"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
@@ -75,10 +75,10 @@ text = "CastSpell
 [node name="Enemy1" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 202.0
-offset_top = 27.0
-offset_right = 575.0
-offset_bottom = 174.0
+offset_left = 200.0
+offset_top = 32.0
+offset_right = 573.0
+offset_bottom = 179.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy1"]
 layout_mode = 1
@@ -101,13 +101,19 @@ offset_right = 0.118988
 offset_bottom = 0.0579834
 theme_override_constants/separation = 70
 
+[node name="NickName" type="Label" parent="UI/Enemy1"]
+layout_mode = 0
+offset_top = -24.0
+offset_right = 184.0
+offset_bottom = -1.0
+
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 600.0
-offset_top = 24.0
-offset_right = 972.0
-offset_bottom = 172.0
+offset_left = 608.0
+offset_top = 32.0
+offset_right = 980.0
+offset_bottom = 180.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy2"]
 layout_mode = 1
@@ -128,6 +134,12 @@ offset_left = -0.118991
 offset_top = 0.0549927
 offset_right = 0.118988
 offset_bottom = 0.0579834
+
+[node name="NickName" type="Label" parent="UI/Enemy2"]
+layout_mode = 0
+offset_top = -24.0
+offset_right = 160.0
+offset_bottom = -1.0
 
 [node name="Enemy3" type="Control" parent="UI"]
 layout_mode = 3
@@ -158,6 +170,13 @@ offset_top = 0.0549965
 offset_right = 0.118988
 offset_bottom = 0.0579834
 
+[node name="NickName" type="Label" parent="UI/Enemy3"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -25.0
+offset_right = 127.0
+offset_bottom = -2.0
+
 [node name="Enemy4" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
@@ -187,6 +206,14 @@ offset_left = -0.11897
 offset_top = 0.0549927
 offset_right = 0.119019
 offset_bottom = 0.0579834
+
+[node name="NickName" type="Label" parent="UI/Enemy4"]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 306.0
+rotation = 1.58825
 
 [node name="BackGround" type="CanvasLayer" parent="."]
 layer = -1
