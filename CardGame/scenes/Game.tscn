@@ -122,6 +122,13 @@ offset_top = -24.0
 offset_right = 184.0
 offset_bottom = -1.0
 
+[node name="CardsAmount" type="Label" parent="UI/Enemy1"]
+layout_mode = 0
+offset_left = 318.0
+offset_top = -22.0
+offset_right = 371.0
+offset_bottom = 1.0
+
 [node name="Area2D" type="Area2D" parent="UI/Enemy1"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy1/Area2D"]
@@ -161,6 +168,13 @@ offset_bottom = 0.0579834
 layout_mode = 0
 offset_top = -24.0
 offset_right = 160.0
+offset_bottom = -1.0
+
+[node name="CardsAmount" type="Label" parent="UI/Enemy2"]
+layout_mode = 0
+offset_left = 319.0
+offset_top = -24.0
+offset_right = 372.0
 offset_bottom = -1.0
 
 [node name="Area2D" type="Area2D" parent="UI/Enemy2"]
@@ -205,6 +219,13 @@ offset_left = -2.0
 offset_top = -25.0
 offset_right = 127.0
 offset_bottom = -2.0
+
+[node name="CardsAmount" type="Label" parent="UI/Enemy3"]
+layout_mode = 0
+offset_left = 319.884
+offset_top = -22.8962
+offset_right = 372.884
+offset_bottom = 0.103821
 
 [node name="Area2D" type="Area2D" parent="UI/Enemy3"]
 
@@ -251,11 +272,17 @@ offset_right = 200.0
 offset_bottom = 306.0
 rotation = 1.58825
 
+[node name="CardsAmount" type="Label" parent="UI/Enemy4"]
+layout_mode = 0
+offset_left = 296.846
+offset_top = 147.792
+offset_right = 349.846
+offset_bottom = 170.792
+
 [node name="Area2D" type="Area2D" parent="UI/Enemy4"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy4/Area2D"]
 position = Vector2(174.93, 73.2537)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_aug50")
 
 [connection signal="input_event" from="UI/Enemy1/Area2D" to="UI" method="_on_Enemy1_input_event"]

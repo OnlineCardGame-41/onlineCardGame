@@ -120,6 +120,11 @@ func _refresh_board() -> void:
 			var sprite = CARD_SPRITE.instantiate()
 			sprite.set_card(card_data)   
 			holder.add_child(sprite)
+		
+		var player: Control = _seat_of_pid[pid]
+		var cards_amount = player.get_node("CardsAmount")
+		cards_amount.text = str(_gs.hands.get(pid, []).size(), " cards")
+	
 	
 
 
