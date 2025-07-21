@@ -36,6 +36,7 @@ func card_reposition(card: Card):
 	cards_holder.move_child(card, 0 if put_left else cards_holder.get_child_count())
 	if is_final:
 		card.mouse_filter = MOUSE_FILTER_IGNORE
-	print("PutLeft: ", put_left)
+	#print("PutLeft: ", put_left)
+	print("card_added ", idx, " ",  put_left)
 	emit_signal("card_added", idx, put_left)
 	

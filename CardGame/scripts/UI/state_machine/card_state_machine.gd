@@ -58,4 +58,4 @@ func on_child_transition(new_state_name):
 	
 	current_state = new_state
 	
-	prints(get_parent() ,"current state", current_state)
+	#prints(get_parent() ,"current state", current_state)

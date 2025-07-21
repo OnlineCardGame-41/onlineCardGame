@@ -103,8 +103,8 @@ func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 		return
 	wait = true
 	if to_board:
-		var card = hands[pid][card_idx]
-		_play_card(pid, card, is_left)
+		#var card = hands[pid][card_idx]
+		_play_card(pid, card_idx, is_left)
 	else:
 		await _resolve_board(pid)
 
@@ -129,6 +129,7 @@ func _apply_draw(pid: int, card: CardDeck.CardColor) -> void:
 	if not hands.has(pid):
 		hands[pid] = []
 	hands[pid].append(card)
+	print("hands: ", hands)
 	emit_signal("card_drawn", pid, card)
 
 func _draw_card(pid: int) -> void:
@@ -159,15 +160,18 @@ func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
 	if not boards.has(pid):
 		boards[pid] = []
 	if is_left:
-		boards[pid].push_front(card)
+		boards[pid].push_front(hands[pid][card])
 	else:
-		boards[pid].push_back(card)
+		boards[pid].push_back(hands[pid][card])
 		
-	var idx = hands[pid].find(card)
-	if idx != -1:
-		hands[pid].remove_at(idx)
-	print(boards)
-	emit_signal("card_played", pid, card)
+	
+	var card_color = hands[pid][card]
+	
+	hands[pid].remove_at(card)
+	print("boards: ", boards)
+	print("hands: ", hands)
+	print("card: ", card)
+	emit_signal("card_played", pid, card_color)
 
 func _play_card(pid: int, card: int, is_left: bool) -> void:
 	rpc("_apply_card_played", pid, card, is_left)

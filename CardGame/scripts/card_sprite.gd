@@ -10,4 +10,3 @@ const LABEL = {
 
 func set_card(color: CardDeck.CardColor) -> void:
 	$TextureRect.texture = load("res://src/%s.png" % LABEL[color])
-	print("FHSDAHFIUSDHIUFGUYHSDGFUYGSDUYFGYUASGDFUIYGAHSIDUBYGIUY")

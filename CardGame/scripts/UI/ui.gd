@@ -112,7 +112,6 @@ func _on_match_ended(winner_pid: int):
 	
 func _refresh_board() -> void:
 	for pid in _seat_of_pid.keys():
-		print("LOLKEK228",pid)
 		var seat  : Control        = _seat_of_pid[pid]
 		var holder: HBoxContainer  = seat.get_node("Board")   
 		for c in holder.get_children():

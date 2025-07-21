@@ -2,7 +2,6 @@ extends CardState
 
 
 func _enter():
-	print(card.index, "ASDSAFDAS")
 
 	#When a card is released, it checks where it is at the time of release.
 	var field_areas = card.drop_point_detector.get_overlapping_areas()
