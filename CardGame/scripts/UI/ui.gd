@@ -29,7 +29,7 @@ const CARD_SPRITE: PackedScene = preload("res://scenes/CardSprite.tscn")
 	$"Enemy4",  
 ]
 var _seat_of_pid : Dictionary = {}    
-
+var _pid_of_sit : Dictionary = {}    
 
 
 func initial() -> void:
@@ -43,7 +43,7 @@ func initial() -> void:
 		if seat_idx >= _enemy_seats.size():
 			push_error("Not enough Enemy‑slots for pid %s" % ppid)
 			break                             # or wrap/extend as you prefer
-
+		_pid_of_sit[_enemy_seats[seat_idx]] = ppid
 		_seat_of_pid[ppid] = _enemy_seats[seat_idx]
 		var player: Control = _seat_of_pid[ppid]
 		var nick = player.get_node("NickName")
@@ -121,3 +121,34 @@ func _refresh_board() -> void:
 			sprite.set_card(card_data)   
 			holder.add_child(sprite)
 	
+
+
+func _on_Enemy1_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	print(event)
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		var sit = _enemy_seats[0]
+		var pid = _pid_of_sit[sit]
+		print("player_picked ", pid)
+		emit_signal("player_picked", pid)
+
+
+func _on_area_Enemy2_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		var sit = _enemy_seats[1]
+		var pid = _pid_of_sit[sit]
+		print("player_picked ", pid)
+		emit_signal("player_picked", pid)
+	
+func _on_area_Enemy3_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		var sit = _enemy_seats[2]
+		var pid = _pid_of_sit[sit]
+		print("player_picked ", pid)
+		emit_signal("player_picked", pid)
+	
+func _on_area_Enemy4_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		var sit = _enemy_seats[3]
+		var pid = _pid_of_sit[sit]
+		print("player_picked ", pid)
+		emit_signal("player_picked", pid)

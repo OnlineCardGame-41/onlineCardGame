@@ -163,7 +163,6 @@ func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
 		boards[pid].push_front(hands[pid][card])
 	else:
 		boards[pid].push_back(hands[pid][card])
-		
 	
 	var card_color = hands[pid][card]
 	

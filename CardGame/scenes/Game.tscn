@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=8 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
 [ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
 [ext_resource type="Material" uid="uid://c3tmw2jmxd4mr" path="res://materials/best.tres" id="6_aug50"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aug50"]
+size = Vector2(351.676, 150)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
@@ -18,6 +21,17 @@ script = ExtResource("2_qbsmt")
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("4_s0nni")
+
+[node name="BackGround" type="CanvasLayer" parent="UI"]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="UI/BackGround"]
+material = ExtResource("6_aug50")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Node" type="Node" parent="UI" groups=["fields"]]
 
@@ -79,6 +93,7 @@ offset_left = 200.0
 offset_top = 32.0
 offset_right = 573.0
 offset_bottom = 179.0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy1"]
 layout_mode = 1
@@ -107,6 +122,12 @@ offset_top = -24.0
 offset_right = 184.0
 offset_bottom = -1.0
 
+[node name="Area2D" type="Area2D" parent="UI/Enemy1"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy1/Area2D"]
+position = Vector2(188, 71)
+shape = SubResource("RectangleShape2D_aug50")
+
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
@@ -114,6 +135,7 @@ offset_left = 608.0
 offset_top = 32.0
 offset_right = 980.0
 offset_bottom = 180.0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy2"]
 layout_mode = 1
@@ -141,6 +163,12 @@ offset_top = -24.0
 offset_right = 160.0
 offset_bottom = -1.0
 
+[node name="Area2D" type="Area2D" parent="UI/Enemy2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy2/Area2D"]
+position = Vector2(186, 73)
+shape = SubResource("RectangleShape2D_aug50")
+
 [node name="Enemy3" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
@@ -149,6 +177,7 @@ offset_top = 530.0
 offset_right = 405.0
 offset_bottom = 677.0
 rotation = -1.39626
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy3"]
 layout_mode = 1
@@ -177,6 +206,12 @@ offset_top = -25.0
 offset_right = 127.0
 offset_bottom = -2.0
 
+[node name="Area2D" type="Area2D" parent="UI/Enemy3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy3/Area2D"]
+position = Vector2(185.303, 71.9144)
+shape = SubResource("RectangleShape2D_aug50")
+
 [node name="Enemy4" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
@@ -185,6 +220,7 @@ offset_top = 552.0
 offset_right = 1318.0
 offset_bottom = 700.0
 rotation = -1.74533
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy4"]
 clip_contents = true
@@ -215,13 +251,14 @@ offset_right = 200.0
 offset_bottom = 306.0
 rotation = 1.58825
 
-[node name="BackGround" type="CanvasLayer" parent="."]
-layer = -1
+[node name="Area2D" type="Area2D" parent="UI/Enemy4"]
 
-[node name="ColorRect" type="ColorRect" parent="BackGround"]
-material = ExtResource("6_aug50")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy4/Area2D"]
+position = Vector2(174.93, 73.2537)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_aug50")
+
+[connection signal="input_event" from="UI/Enemy1/Area2D" to="UI" method="_on_Enemy1_input_event"]
+[connection signal="input_event" from="UI/Enemy2/Area2D" to="UI" method="_on_area_Enemy2_input_event"]
+[connection signal="input_event" from="UI/Enemy3/Area2D" to="UI" method="_on_area_Enemy3_input_event"]
+[connection signal="input_event" from="UI/Enemy4/Area2D" to="UI" method="_on_area_Enemy4_input_event"]
