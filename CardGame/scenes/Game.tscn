@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
 [ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
-[ext_resource type="Material" uid="uid://c3tmw2jmxd4mr" path="res://materials/best.tres" id="6_aug50"]
+[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://materials/pixelated.tres" id="5_aug50"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aug50"]
 size = Vector2(351.676, 150)
@@ -26,7 +26,7 @@ script = ExtResource("4_s0nni")
 layer = -1
 
 [node name="ColorRect" type="ColorRect" parent="UI/BackGround"]
-material = ExtResource("6_aug50")
+material = ExtResource("5_aug50")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -89,10 +89,10 @@ text = "CastSpell
 [node name="Enemy1" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 200.0
-offset_top = 32.0
-offset_right = 573.0
-offset_bottom = 179.0
+offset_left = 192.0
+offset_top = 16.0
+offset_right = 565.0
+offset_bottom = 163.0
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy1"]
@@ -138,10 +138,10 @@ shape = SubResource("RectangleShape2D_aug50")
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 608.0
-offset_top = 32.0
-offset_right = 980.0
-offset_bottom = 180.0
+offset_left = 592.0
+offset_top = 16.0
+offset_right = 964.0
+offset_bottom = 164.0
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy2"]
@@ -186,10 +186,10 @@ shape = SubResource("RectangleShape2D_aug50")
 [node name="Enemy3" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 33.0
-offset_top = 530.0
-offset_right = 405.0
-offset_bottom = 677.0
+offset_left = 8.0
+offset_top = 520.0
+offset_right = 380.0
+offset_bottom = 667.0
 rotation = -1.39626
 mouse_filter = 1
 
@@ -237,9 +237,9 @@ shape = SubResource("RectangleShape2D_aug50")
 layout_mode = 3
 anchors_preset = 0
 offset_left = 968.0
-offset_top = 552.0
+offset_top = 544.0
 offset_right = 1318.0
-offset_bottom = 700.0
+offset_bottom = 692.0
 rotation = -1.74533
 mouse_filter = 1
 
