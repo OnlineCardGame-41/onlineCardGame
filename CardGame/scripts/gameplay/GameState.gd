@@ -6,9 +6,8 @@ signal card_drawn(pid: int, card: CardDeck.CardColor)
 signal card_played(pid: int, card: CardDeck.CardColor)
 signal board_cleared(pid: int, seq: Array)
 signal match_ended(winner_pid: int)
-
 signal shield_changed(pid: int, count: int)
-signal curse_added(pid: int, turns: int)      # новое проклятье
+signal curse_added(pid: int, turns: int)      
 
 @export var turn_time := 40.0  # секунд на ход
 
@@ -21,7 +20,7 @@ var skip_turns: Dictionary = {}
 var draw_bonus: Dictionary = {}     
 var active_idx = 0
 @onready var turn_timer := $"../TurnTimer"
-var pv: Control
+@onready var ui: CanvasLayer = $"../UI"
 # ---------------------------------------------------------------------------
 # Match lifecycle
 # ---------------------------------------------------------------------------
@@ -29,6 +28,7 @@ var pv: Control
 @rpc("authority", "call_local")
 func start_match(pids: PackedInt32Array) -> void:
 	players = pids
+	ui.initial()
 	for pid in players:
 		hands[pid] = []
 		boards[pid] = []
@@ -57,6 +57,9 @@ func _begin_turn(idx: int) -> void:
 	turn_timer.stop()
 	emit_signal("turn_started", pid, turn_time)
 	turn_timer.start(turn_time)
+
+func _process(delta: float) -> void:
+	pass
 
 # ---------------------------------------------------------------------------
 # Curses helper
@@ -92,7 +95,7 @@ func request_draw() -> void:
 	_draw_card(players[active_idx])
 
 var wait = false
-func request_play(card_idx: int, to_board: bool) -> void:
+func request_play(card_idx: int, to_board: bool, is_left: bool) -> void:
 	var pid = multiplayer.get_unique_id()
 	if pid != players[active_idx]:
 		return
@@ -100,8 +103,8 @@ func request_play(card_idx: int, to_board: bool) -> void:
 		return
 	wait = true
 	if to_board:
-		var card = hands[pid][card_idx]
-		_play_card(pid, card)
+		#var card = hands[pid][card_idx]
+		_play_card(pid, card_idx, is_left)
 	else:
 		await _resolve_board(pid)
 
@@ -126,6 +129,7 @@ func _apply_draw(pid: int, card: CardDeck.CardColor) -> void:
 	if not hands.has(pid):
 		hands[pid] = []
 	hands[pid].append(card)
+	print("hands: ", hands)
 	emit_signal("card_drawn", pid, card)
 
 func _draw_card(pid: int) -> void:
@@ -151,19 +155,25 @@ func _draw_card(pid: int) -> void:
 		rpc("_apply_draw", pid, card)
 
 @rpc("any_peer", "call_local")
-func _apply_card_played(pid: int, card: int) -> void:
+func _apply_card_played(pid: int, card: int, is_left: bool) -> void:
+	
 	if not boards.has(pid):
 		boards[pid] = []
-	boards[pid].append(card)
+	if is_left:
+		boards[pid].push_front(hands[pid][card])
+	else:
+		boards[pid].push_back(hands[pid][card])
+	
+	var card_color = hands[pid][card]
+	
+	hands[pid].remove_at(card)
+	print("boards: ", boards)
+	print("hands: ", hands)
+	print("card: ", card)
+	emit_signal("card_played", pid, card_color)
 
-	var idx = hands[pid].find(card)
-	if idx != -1:
-		hands[pid].remove_at(idx)
-
-	emit_signal("card_played", pid, card)
-
-func _play_card(pid: int, card: int) -> void:
-	rpc("_apply_card_played", pid, card)
+func _play_card(pid: int, card: int, is_left: bool) -> void:
+	rpc("_apply_card_played", pid, card, is_left)
 
 @rpc("any_peer", "call_local")
 func _apply_board_cleared(pid: int, seq: Array) -> void:
@@ -212,8 +222,8 @@ func add_curse(pid: int, turns: int = 3) -> void:
 # Helpers
 # ---------------------------------------------------------------------------
 
-func _set_player_view(pv: Control):
-	self.pv = pv
+func _set_player_view(ui: CanvasLayer):
+	self.ui = ui
 
 func _discard_last(pid: int) -> void:
 	if not hands[pid].is_empty():
@@ -228,9 +238,9 @@ func _others_draw(except_pid: int) -> void:
 
 func choose_target(pool: Array, acting_pid: int = multiplayer.get_unique_id()) -> int:
 	if acting_pid == multiplayer.get_unique_id():
-		var pid = await pv.player_picked
+		var pid = await ui.player_picked
 		while pid not in pool:
-			pid = await pv.player_picked
+			pid = await ui.player_picked
 		return pid
 	else:
 		# Заглушка
@@ -239,7 +249,7 @@ func choose_target(pool: Array, acting_pid: int = multiplayer.get_unique_id()) -
 func choose_targets(pool: Array, k: int) -> Array:
 	var res: Array = []
 	while res.size() < k and not pool.is_empty():
-		var pid = await pv.player_picked
+		var pid = await ui.player_picked
 		if pid in pool and pid not in res:
 			res.append(pid)
 	return res
@@ -515,6 +525,6 @@ func match_cards(seq: Array) -> void:
 			give_shield(pid_self, 2)
 
 		_:
-			var pid_pick = await pv.player_picked
+			var pid_pick = await ui.player_picked
 			if pid_pick:
 				_draw_card(pid_pick)

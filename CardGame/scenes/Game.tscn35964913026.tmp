@@ -1,14 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvoyvtf17v0ie"]
+[gd_scene load_steps=6 format=3 uid="uid://dvoyvtf17v0ie"]
 
 [ext_resource type="Script" uid="uid://hx6f1jxeqqct" path="res://scripts/gameplay/Game.gd" id="1_78awf"]
 [ext_resource type="Script" uid="uid://ug1bvfcpnhax" path="res://scripts/gameplay/GameState.gd" id="2_qbsmt"]
 [ext_resource type="Script" uid="uid://cj20d32sutbbl" path="res://scripts/gameplay/TurnTimer.gd" id="3_cpr0p"]
 [ext_resource type="PackedScene" uid="uid://biim2lxri0akl" path="res://scenes/field.tscn" id="4_78awf"]
 [ext_resource type="Script" uid="uid://cketyq3dtlrxd" path="res://scripts/UI/ui.gd" id="4_s0nni"]
-[ext_resource type="Material" uid="uid://bswr4dcliwbtq" path="res://materials/pixelated.tres" id="5_aug50"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_aug50"]
-size = Vector2(351.676, 150)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_78awf")
@@ -21,17 +17,6 @@ script = ExtResource("2_qbsmt")
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("4_s0nni")
-
-[node name="BackGround" type="CanvasLayer" parent="UI"]
-layer = -1
-
-[node name="ColorRect" type="ColorRect" parent="UI/BackGround"]
-material = ExtResource("5_aug50")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="Node" type="Node" parent="UI" groups=["fields"]]
 
@@ -89,11 +74,10 @@ text = "CastSpell
 [node name="Enemy1" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 192.0
-offset_top = 16.0
-offset_right = 565.0
-offset_bottom = 163.0
-mouse_filter = 1
+offset_left = 218.0
+offset_top = 50.0
+offset_right = 591.0
+offset_bottom = 197.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy1"]
 layout_mode = 1
@@ -114,35 +98,14 @@ offset_left = -0.119
 offset_top = 0.0549965
 offset_right = 0.118988
 offset_bottom = 0.0579834
-theme_override_constants/separation = 70
-
-[node name="NickName" type="Label" parent="UI/Enemy1"]
-layout_mode = 0
-offset_top = -24.0
-offset_right = 184.0
-offset_bottom = -1.0
-
-[node name="CardsAmount" type="Label" parent="UI/Enemy1"]
-layout_mode = 0
-offset_left = 318.0
-offset_top = -22.0
-offset_right = 371.0
-offset_bottom = 1.0
-
-[node name="Area2D" type="Area2D" parent="UI/Enemy1"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy1/Area2D"]
-position = Vector2(188, 71)
-shape = SubResource("RectangleShape2D_aug50")
 
 [node name="Enemy2" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 592.0
-offset_top = 16.0
-offset_right = 964.0
-offset_bottom = 164.0
-mouse_filter = 1
+offset_left = 590.0
+offset_top = 47.0
+offset_right = 962.0
+offset_bottom = 195.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy2"]
 layout_mode = 1
@@ -164,34 +127,13 @@ offset_top = 0.0549927
 offset_right = 0.118988
 offset_bottom = 0.0579834
 
-[node name="NickName" type="Label" parent="UI/Enemy2"]
-layout_mode = 0
-offset_top = -24.0
-offset_right = 160.0
-offset_bottom = -1.0
-
-[node name="CardsAmount" type="Label" parent="UI/Enemy2"]
-layout_mode = 0
-offset_left = 319.0
-offset_top = -24.0
-offset_right = 372.0
-offset_bottom = -1.0
-
-[node name="Area2D" type="Area2D" parent="UI/Enemy2"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy2/Area2D"]
-position = Vector2(186, 73)
-shape = SubResource("RectangleShape2D_aug50")
-
 [node name="Enemy3" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 8.0
-offset_top = 520.0
-offset_right = 380.0
-offset_bottom = 667.0
-rotation = -1.39626
-mouse_filter = 1
+offset_left = 2.0
+offset_top = 198.0
+offset_right = 374.0
+offset_bottom = 345.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy3"]
 layout_mode = 1
@@ -213,35 +155,13 @@ offset_top = 0.0549965
 offset_right = 0.118988
 offset_bottom = 0.0579834
 
-[node name="NickName" type="Label" parent="UI/Enemy3"]
-layout_mode = 0
-offset_left = -2.0
-offset_top = -25.0
-offset_right = 127.0
-offset_bottom = -2.0
-
-[node name="CardsAmount" type="Label" parent="UI/Enemy3"]
-layout_mode = 0
-offset_left = 319.884
-offset_top = -22.8962
-offset_right = 372.884
-offset_bottom = 0.103821
-
-[node name="Area2D" type="Area2D" parent="UI/Enemy3"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy3/Area2D"]
-position = Vector2(185.303, 71.9144)
-shape = SubResource("RectangleShape2D_aug50")
-
 [node name="Enemy4" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 968.0
-offset_top = 544.0
-offset_right = 1318.0
-offset_bottom = 692.0
-rotation = -1.74533
-mouse_filter = 1
+offset_left = 798.0
+offset_top = 195.0
+offset_right = 1148.0
+offset_bottom = 343.0
 
 [node name="ColorRect" type="ColorRect" parent="UI/Enemy4"]
 clip_contents = true
@@ -263,29 +183,3 @@ offset_left = -0.11897
 offset_top = 0.0549927
 offset_right = 0.119019
 offset_bottom = 0.0579834
-
-[node name="NickName" type="Label" parent="UI/Enemy4"]
-layout_mode = 0
-offset_left = 160.0
-offset_top = 150.0
-offset_right = 200.0
-offset_bottom = 306.0
-rotation = 1.58825
-
-[node name="CardsAmount" type="Label" parent="UI/Enemy4"]
-layout_mode = 0
-offset_left = 296.846
-offset_top = 147.792
-offset_right = 349.846
-offset_bottom = 170.792
-
-[node name="Area2D" type="Area2D" parent="UI/Enemy4"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Enemy4/Area2D"]
-position = Vector2(174.93, 73.2537)
-shape = SubResource("RectangleShape2D_aug50")
-
-[connection signal="input_event" from="UI/Enemy1/Area2D" to="UI" method="_on_Enemy1_input_event"]
-[connection signal="input_event" from="UI/Enemy2/Area2D" to="UI" method="_on_area_Enemy2_input_event"]
-[connection signal="input_event" from="UI/Enemy3/Area2D" to="UI" method="_on_area_Enemy3_input_event"]
-[connection signal="input_event" from="UI/Enemy4/Area2D" to="UI" method="_on_area_Enemy4_input_event"]

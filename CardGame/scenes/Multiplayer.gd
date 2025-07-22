@@ -1,3 +1,4 @@
+class_name Multiplayer
 extends Node2D
 
 #@export var websocket_url = "wss://godot-golang-webrtc-signal.onrender.com/ws"
@@ -18,7 +19,7 @@ extends Node2D
 @export var game_scene: PackedScene = preload("res://scenes/Game.tscn")
 
 var peer_connections = {}  # pid -> WebRTCPeerConnection
-var peer_names = {}  
+static var peer_names: Dictionary = {}  
 
 @onready var client = SignalWsClient.new()
 @onready var rtc_mesh = WebRTCMultiplayerPeer.new()
